@@ -231,6 +231,9 @@
     .resistores { grid-template-columns: minmax(0, 1fr); }
   }
 
+  /* ========== CONFETES ========== */
+  .confetes { position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 100; }
+
   /* ========== TELAS PEQUENAS ========== */
   @media (max-width: 760px) {
     body { flex-direction: column; }
@@ -809,6 +812,123 @@ function desenharFaixa(erro = false) {
   });
 }
 
+// =====================================
+// SONS DE ACERTO E ERRO (tocam no computador) E CONFETES
+// =====================================
+
+let audio = null;
+
+// O navegador só libera o som depois de um clique ou tecla
+function prepararAudio() {
+  try {
+    if (!audio) audio = new (window.AudioContext || window.webkitAudioContext)();
+    if (audio.state === "suspended") audio.resume();
+  } catch (e) {
+    audio = null;
+  }
+}
+document.addEventListener("pointerdown", prepararAudio);
+document.addEventListener("keydown", prepararAudio);
+
+// Toca um bipe: frequência (Hz), início e duração (segundos), tipo de onda
+function bipe(freq, inicio, duracao, onda = "triangle", volume = 0.25, freqFinal = null) {
+  if (!audio) return;
+  const t = audio.currentTime + inicio;
+  const osc = audio.createOscillator();
+  const ganho = audio.createGain();
+  osc.type = onda;
+  osc.frequency.setValueAtTime(freq, t);
+  if (freqFinal) osc.frequency.exponentialRampToValueAtTime(freqFinal, t + duracao);
+  ganho.gain.setValueAtTime(0.0001, t);
+  ganho.gain.exponentialRampToValueAtTime(volume, t + 0.02);
+  ganho.gain.exponentialRampToValueAtTime(0.0001, t + duracao);
+  osc.connect(ganho).connect(audio.destination);
+  osc.start(t);
+  osc.stop(t + duracao + 0.05);
+}
+
+// Fanfarra: Dó, Mi, Sol, Dó agudo
+function somComemoracao() {
+  prepararAudio();
+  [523, 659, 784].forEach((f, i) => bipe(f, i * 0.13, 0.18));
+  bipe(1047, 0.39, 0.6, "triangle", 0.3);
+  bipe(1319, 0.39, 0.6, "sine", 0.12);
+}
+
+// Plim curtinho (rodada do jogo da memória)
+function somAcerto() {
+  prepararAudio();
+  bipe(784, 0, 0.12);
+  bipe(1175, 0.1, 0.3);
+}
+
+// "Bom-bom" grave (nota errada)
+function somErro() {
+  prepararAudio();
+  bipe(220, 0, 0.18, "square", 0.12);
+  bipe(175, 0.2, 0.3, "square", 0.12);
+}
+
+// "Uó-uó-uóóó" descendo (fim de jogo)
+function somFimDeJogo() {
+  prepararAudio();
+  bipe(392, 0, 0.25, "sawtooth", 0.1, 370);
+  bipe(349, 0.28, 0.25, "sawtooth", 0.1, 330);
+  bipe(311, 0.56, 0.7, "sawtooth", 0.1, 220);
+}
+
+function confetes(quantidade = 160) {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+  const tela = document.createElement("canvas");
+  tela.className = "confetes";
+  document.body.appendChild(tela);
+  const ctx = tela.getContext("2d");
+  const dpr = window.devicePixelRatio || 1;
+  const L = window.innerWidth, A = window.innerHeight;
+  tela.width = L * dpr; tela.height = A * dpr;
+  ctx.scale(dpr, dpr);
+
+  const cores = ["#38BDF8", "#F5B82E", "#16834A", "#D9473F", "#A855F7", "#F472B6"];
+  const pedacos = [];
+  for (let i = 0; i < quantidade; i++) {
+    const daEsquerda = i % 2 === 0;
+    pedacos.push({
+      x: daEsquerda ? 0 : L,
+      y: A * 0.75,
+      vx: (daEsquerda ? 1 : -1) * (4 + Math.random() * 9),
+      vy: -(12 + Math.random() * 12),
+      giro: Math.random() * Math.PI,
+      vgiro: (Math.random() - 0.5) * 0.3,
+      largura: 7 + Math.random() * 6,
+      altura: 4 + Math.random() * 5,
+      cor: cores[i % cores.length]
+    });
+  }
+
+  const inicio = performance.now();
+  function quadro(agora) {
+    const tempo = agora - inicio;
+    ctx.clearRect(0, 0, L, A);
+    for (const p of pedacos) {
+      p.vy += 0.32;          // gravidade
+      p.vx *= 0.99;          // resistência do ar
+      p.x += p.vx; p.y += p.vy;
+      p.giro += p.vgiro;
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.giro);
+      ctx.globalAlpha = Math.max(0, 1 - Math.max(0, tempo - 2200) / 800);
+      ctx.fillStyle = p.cor;
+      ctx.fillRect(-p.largura / 2, -p.altura / 2, p.largura, p.altura * Math.abs(Math.cos(p.giro * 2)) + 1);
+      ctx.restore();
+    }
+    if (tempo < 3000) requestAnimationFrame(quadro);
+    else tela.remove();
+  }
+  requestAnimationFrame(quadro);
+}
+
 function definirInstrucao(elemento, texto, tipo = "") {
   elemento.textContent = texto;
   elemento.className = "instrucao" + (tipo ? " " + tipo : "");
@@ -839,8 +959,11 @@ function registrarNota(nota) {
     } else {
       definirInstrucao(instrucaoNota, "Parabéns! Você terminou! ⭐", "ok");
       progressoNota.textContent = `${MUSICAS[musicaAtual].nome} concluída!`;
+      somComemoracao();
+      confetes();
     }
   } else {
+    somErro();
     definirInstrucao(instrucaoNota, `Tente novamente: ${notaCorreta}`, "erro");
     desenharFaixa(true);
   }
@@ -957,6 +1080,8 @@ function verificarMemoria(nota) {
       sequenciaMemoria.push(sortearNota());
       definirInstrucao(instrucaoMemoria, "Muito bem! ✅", "ok");
       atualizarPlacar();
+      somAcerto();
+      confetes(70);
 
       const g = geracaoMemoria;
       setTimeout(() => mostrarSequencia(g), 1000);
@@ -966,6 +1091,7 @@ function verificarMemoria(nota) {
     const rodadasCompletas = sequenciaMemoria.length - 1; // a rodada atual não foi concluída
     recordeMemoria = Math.max(recordeMemoria, rodadasCompletas);
     salvarRecorde();
+    somFimDeJogo();
     definirInstrucao(instrucaoMemoria, `Errou! Era ${notaCorreta}. Fim de jogo`, "erro");
     placarMemoria.textContent =
       `Você completou ${rodadasCompletas} rodada(s)  |  Recorde: ${recordeMemoria}`;
