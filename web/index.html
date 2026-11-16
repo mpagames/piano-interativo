@@ -574,17 +574,73 @@ const MUSICAS = {
       "Sol", "Sol", "Sol", "Mi", "Dó", "Si", "Lá",
       "Fá", "Fá", "Mi", "Dó", "Ré", "Dó"
     ]
+  },
+  escada: {
+    nome: "Escada Musical",
+    notas: [
+      "Dó", "Ré", "Mi", "Fá", "Sol", "Lá", "Si",
+      "Lá", "Sol", "Fá", "Mi", "Ré", "Dó"
+    ]
+  },
+  doremifa: {
+    nome: "Dó Ré Mi Fá",
+    notas: [
+      "Dó", "Ré", "Mi", "Fá", "Fá", "Fá",
+      "Dó", "Ré", "Dó", "Ré", "Ré", "Ré",
+      "Dó", "Sol", "Fá", "Mi", "Mi", "Mi",
+      "Dó", "Ré", "Mi", "Fá", "Fá", "Fá"
+    ]
+  },
+  carneirinho: {
+    nome: "Maria Tinha um Carneirinho",
+    notas: [
+      "Mi", "Ré", "Dó", "Ré", "Mi", "Mi", "Mi",
+      "Ré", "Ré", "Ré", "Mi", "Sol", "Sol",
+      "Mi", "Ré", "Dó", "Ré", "Mi", "Mi", "Mi",
+      "Mi", "Ré", "Ré", "Mi", "Ré", "Dó"
+    ]
+  },
+  jaco: {
+    nome: "Irmão Jacó",
+    notas: [
+      "Dó", "Ré", "Mi", "Dó", "Dó", "Ré", "Mi", "Dó",
+      "Mi", "Fá", "Sol", "Mi", "Fá", "Sol",
+      "Sol", "Lá", "Sol", "Fá", "Mi", "Dó",
+      "Sol", "Lá", "Sol", "Fá", "Mi", "Dó",
+      "Dó", "Sol", "Dó", "Dó", "Sol", "Dó"
+    ]
+  },
+  sino: {
+    nome: "Bate o Sino",
+    notas: [
+      "Mi", "Mi", "Mi", "Mi", "Mi", "Mi",
+      "Mi", "Sol", "Dó", "Ré", "Mi",
+      "Fá", "Fá", "Fá", "Fá", "Fá", "Mi", "Mi", "Mi",
+      "Mi", "Ré", "Ré", "Mi", "Ré", "Sol"
+    ]
+  },
+  alegria: {
+    nome: "Hino à Alegria",
+    notas: [
+      "Mi", "Mi", "Fá", "Sol", "Sol", "Fá", "Mi", "Ré",
+      "Dó", "Dó", "Ré", "Mi", "Mi", "Ré", "Ré",
+      "Mi", "Mi", "Fá", "Sol", "Sol", "Fá", "Mi", "Ré",
+      "Dó", "Dó", "Ré", "Mi", "Ré", "Dó", "Dó"
+    ]
   }
 };
 
 // Cartões da biblioteca. "chave" liga o cartão a uma música de MUSICAS.
 const CARTOES = [
+  { simbolo: "🪜", nome: "Escada Musical", nivel: "Iniciante", chave: "escada" },
   { simbolo: "⭐", nome: "Brilha, Brilha\nEstrelinha", nivel: "Iniciante", chave: "brilha" },
+  { simbolo: "🎶", nome: "Dó Ré Mi Fá", nivel: "Iniciante", chave: "doremifa" },
+  { simbolo: "🐑", nome: "Maria Tinha um\nCarneirinho", nivel: "Iniciante", chave: "carneirinho" },
+  { simbolo: "🔔", nome: "Irmão Jacó", nivel: "Intermediário", chave: "jaco" },
+  { simbolo: "🎄", nome: "Bate o Sino", nivel: "Intermediário", chave: "sino" },
+  { simbolo: "🎻", nome: "Hino à Alegria", nivel: "Intermediário", chave: "alegria" },
   { simbolo: "🎂", nome: "Parabéns pra Você", nivel: "Intermediário", chave: "parabens" },
-  { simbolo: "🎨", nome: "Aquarela", nivel: "Em breve", chave: null },
-  { simbolo: "🎵", nome: "Nova música", nivel: "Em breve", chave: null },
-  { simbolo: "🎼", nome: "Nova música", nivel: "Em breve", chave: null },
-  { simbolo: "🎹", nome: "Nova música", nivel: "Em breve", chave: null }
+  { simbolo: "🎨", nome: "Aquarela", nivel: "Em breve", chave: null }
 ];
 
 // Teclas do computador, úteis para testar sem o piano físico
@@ -635,6 +691,8 @@ let indiceMemoria = 0;            // quantas notas o jogador já acertou na roda
 let mostrandoSequencia = false;   // o jogo está mostrando a sequência
 let jogandoMemoria = false;       // é a vez do jogador
 let recordeMemoria = lerRecorde();
+let recordeNoInicio = 0;      // recorde quando a partida começou
+let comemorouRecorde = false;  // comemora uma vez só por partida
 let geracaoMemoria = 0;           // serve para cancelar animações antigas
 
 function lerRecorde() {
@@ -855,13 +913,6 @@ function somComemoracao() {
   bipe(1319, 0.39, 0.6, "sine", 0.12);
 }
 
-// Plim curtinho (rodada do jogo da memória)
-function somAcerto() {
-  prepararAudio();
-  bipe(784, 0, 0.12);
-  bipe(1175, 0.1, 0.3);
-}
-
 // "Bom-bom" grave (nota errada)
 function somErro() {
   prepararAudio();
@@ -1008,6 +1059,8 @@ function abrirMemoria() {
 function iniciarMemoria() {
   prepararTelaMemoria();
   sequenciaMemoria = [sortearNota()];
+  recordeNoInicio = recordeMemoria;
+  comemorouRecorde = false;
   definirInstrucao(instrucaoMemoria, "Prepare-se...");
   botaoNovoJogo.textContent = "↻ Reiniciar";
   atualizarPlacar();
@@ -1075,13 +1128,21 @@ function verificarMemoria(nota) {
     // Completou a sequência da rodada
     if (indiceMemoria === sequenciaMemoria.length) {
       jogandoMemoria = false;
+      // Passou o recorde que existia no começo da partida?
+      const novoRecorde = !comemorouRecorde && recordeNoInicio > 0 &&
+        sequenciaMemoria.length > recordeNoInicio;
       recordeMemoria = Math.max(recordeMemoria, sequenciaMemoria.length);
       salvarRecorde();
       sequenciaMemoria.push(sortearNota());
-      definirInstrucao(instrucaoMemoria, "Muito bem! ✅", "ok");
       atualizarPlacar();
-      somAcerto();
-      confetes(70);
+      if (novoRecorde) {
+        comemorouRecorde = true;
+        definirInstrucao(instrucaoMemoria, "Novo recorde! 🏆", "ok");
+        somComemoracao();
+        confetes();
+      } else {
+        definirInstrucao(instrucaoMemoria, "Muito bem! ✅", "ok");
+      }
 
       const g = geracaoMemoria;
       setTimeout(() => mostrarSequencia(g), 1000);
