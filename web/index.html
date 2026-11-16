@@ -54,12 +54,13 @@
     flex-direction: column;
     padding-bottom: 20px;
   }
-  .menu h1 { font-size: 26px; line-height: 1.2; margin: 30px 20px 45px; }
+  .menu h1 { font-size: 26px; line-height: 1.2; margin: 30px 20px 35px; }
   .menu .rotulo {
     font-size: 12px; font-weight: bold; letter-spacing: .05em;
     color: var(--menu-texto2); margin: 0 20px 15px;
   }
   .itens { display: flex; flex-direction: column; }
+  .rotulo-atividades { margin-top: 25px !important; }
   .item {
     background: transparent; color: #fff; border: 0; border-radius: 6px;
     text-align: left; font-size: 16px; font-weight: bold;
@@ -181,6 +182,55 @@
   .cartao .nome { font-weight: bold; font-size: 15px; white-space: pre-line; }
   .cartao .nivel { color: var(--link); font-size: 12px; margin-top: 5px; }
 
+
+  /* ========== LISTA DE PEÇAS E GUIA DE MONTAGEM ========== */
+  .leitura { width: min(860px, 100%); margin: 0 auto; align-items: stretch; }
+  .leitura h2 { text-align: left; }
+  .leitura h3 { font-size: 22px; margin: 0 0 10px; }
+  .leitura p, .leitura li { font-size: 16px; line-height: 1.5; color: var(--titulo); }
+  .leitura ol, .leitura ul { padding-left: 22px; margin: 0; }
+  .leitura li + li { margin-top: 6px; }
+  .bloco {
+    background: #fff; border: 1px solid var(--borda); border-radius: 10px;
+    padding: 20px 22px; margin-bottom: 18px;
+  }
+  .passo-guia { display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: 22px; align-items: start; }
+  .passo-guia.sem-figura { grid-template-columns: minmax(0, 1fr); }
+  .numero {
+    display: inline-block; background: var(--azul); color: #fff; font-weight: bold;
+    font-size: 13px; padding: 4px 12px; border-radius: 20px; margin-bottom: 8px;
+  }
+  .figura { margin: 0; }
+  .desenho-guia { width: 100%; height: auto; display: block; border-radius: 8px; background: var(--cinza); }
+  .figura figcaption { font-size: 13px; color: var(--texto2); margin-top: 6px; text-align: center; }
+  .dica-guia {
+    background: #FEF3C7; border-left: 5px solid #F5B82E; border-radius: 6px;
+    padding: 10px 14px; margin-top: 12px; font-size: 15px; line-height: 1.45;
+  }
+  .atencao { background: #FFE4E1; border-left-color: #D9473F; }
+  .tabela-guia { width: 100%; border-collapse: collapse; font-size: 15px; }
+  .tabela-guia th, .tabela-guia td { border-bottom: 1px solid var(--borda); padding: 9px 8px; text-align: left; vertical-align: top; }
+  .tabela-guia th { background: var(--cinza); font-size: 13px; text-transform: uppercase; letter-spacing: .03em; color: var(--texto2); }
+  .tabela-guia td.qtd { font-weight: bold; white-space: nowrap; }
+  .tabela-guia input { width: 20px; height: 20px; margin: 0; cursor: pointer; }
+  .rolagem { overflow-x: auto; }
+  .pinos td, .pinos th { text-align: center; padding: 8px 4px; }
+  .faixas-cor { display: inline-flex; gap: 3px; vertical-align: middle; margin-right: 8px; }
+  .cor { width: 12px; height: 24px; border-radius: 3px; border: 1px solid rgba(0,0,0,.15); }
+  .c-marrom { background: #6B3E26; } .c-preto { background: #1B1B1B; } .c-laranja { background: #E67E22; }
+  .c-vermelho { background: #C0392B; } .c-dourado { background: #C9A227; } .c-espaco { width: 6px; border: 0; }
+  .resistores { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .resistores .bloco { margin: 0; }
+  .linha-cor { display: flex; align-items: center; margin: 8px 0; font-size: 15px; }
+  .proximo { display: flex; justify-content: flex-end; margin-bottom: 30px; }
+  .leitura a { color: var(--link); font-weight: bold; }
+
+  @media (max-width: 760px) {
+    .passo-guia { grid-template-columns: minmax(0, 1fr); }
+    .passo-guia .figura { max-width: 320px; margin: 0 auto; }
+    .resistores { grid-template-columns: minmax(0, 1fr); }
+  }
+
   /* ========== TELAS PEQUENAS ========== */
   @media (max-width: 760px) {
     body { flex-direction: column; }
@@ -189,6 +239,7 @@
     .menu h1 br { display: none; }
     .menu .rotulo { display: none; }
     .itens { flex-direction: row; overflow-x: auto; padding: 0 6px; }
+    .rotulo-atividades + .itens { margin-top: 6px; }
     .item { white-space: nowrap; margin: 0 4px; padding: 10px 12px; font-size: 14px; }
     .conexao { margin: 12px 12px 0; }
     .grade { grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; }
@@ -204,7 +255,12 @@
      ===================================== -->
 <nav class="menu">
   <h1>PIANO 🎹<br>INTERATIVO</h1>
-  <div class="rotulo">ATIVIDADES</div>
+  <div class="rotulo">MONTAR O PIANO</div>
+  <div class="itens">
+    <button class="item" id="menu-pecas">🧰&nbsp;&nbsp; Lista de peças</button>
+    <button class="item" id="menu-montagem">🔧&nbsp;&nbsp; Guia de montagem</button>
+  </div>
+  <div class="rotulo rotulo-atividades">ATIVIDADES</div>
   <div class="itens">
     <button class="item" id="menu-livre">♫&nbsp;&nbsp; Modo livre</button>
     <button class="item" id="menu-melodia">📖&nbsp;&nbsp; Aprenda uma melodia</button>
@@ -258,6 +314,220 @@
     <h2>Aprenda uma melodia</h2>
     <p class="subtitulo">Escolha uma música para aprender!</p>
     <div class="grade" id="grade-musicas"></div>
+  </section>
+
+  <!-- Lista de peças -->
+  <section class="tela leitura" id="tela-pecas" hidden>
+    <h2>🧰 Lista de peças</h2>
+    <p class="subtitulo">Tudo o que você precisa para montar um piano de 12 teclas. Marque o que já separou!</p>
+
+    <div class="bloco rolagem">
+      <table class="tabela-guia">
+        <tr><th>✔</th><th>Peça</th><th>Quantas</th><th>Para que serve</th></tr>
+        <tr><td><input type="checkbox" aria-label="Separei o Arduino"></td><td>Arduino Uno + cabo USB (A-B)</td><td class="qtd">1</td><td>É o cérebro do piano</td></tr>
+        <tr><td><input type="checkbox" aria-label="Separei a protoboard"></td><td>Protoboard de 830 furos</td><td class="qtd">1</td><td>Onde encaixamos as peças, sem solda</td></tr>
+        <tr><td><input type="checkbox" aria-label="Separei os botões"></td><td>Botão (push button 12 × 12 mm)</td><td class="qtd">12</td><td>São as teclas</td></tr>
+        <tr><td><input type="checkbox" aria-label="Separei os LEDs"></td><td>LED</td><td class="qtd">12</td><td>A luz de cada tecla</td></tr>
+        <tr><td><input type="checkbox" aria-label="Separei os resistores de 10 kΩ"></td><td>Resistor de 10 kΩ</td><td class="qtd">12</td><td>Deixa o botão quieto quando ninguém aperta</td></tr>
+        <tr><td><input type="checkbox" aria-label="Separei os resistores de 220 Ω"></td><td>Resistor de 220 Ω</td><td class="qtd">12</td><td>Protege o LED</td></tr>
+        <tr><td><input type="checkbox" aria-label="Separei o buzzer"></td><td>Buzzer <b>passivo</b></td><td class="qtd">1</td><td>Toca as notas (o ativo só faz bip)</td></tr>
+        <tr><td><input type="checkbox" aria-label="Separei os fios"></td><td>Fios (jumpers macho-macho)</td><td class="qtd">~40</td><td>Ligam tudo. Fios curtos e deitados atrapalham menos na hora de tocar</td></tr>
+        <tr><td><input type="checkbox" aria-label="Tenho um computador"></td><td>Computador com Chrome ou Edge</td><td class="qtd">1</td><td>Para colocar o programa no Arduino e usar este app</td></tr>
+      </table>
+    </div>
+
+    <h3>Qual resistor é qual?</h3>
+    <div class="resistores">
+      <div class="bloco">
+        <h3>10 kΩ: para o botão</h3>
+        <div class="linha-cor"><span class="faixas-cor"><span class="cor c-marrom"></span><span class="cor c-preto"></span><span class="cor c-laranja"></span><span class="cor c-espaco"></span><span class="cor c-dourado"></span></span> 4 faixas: marrom, preto, laranja</div>
+        <div class="linha-cor"><span class="faixas-cor"><span class="cor c-marrom"></span><span class="cor c-preto"></span><span class="cor c-preto"></span><span class="cor c-vermelho"></span><span class="cor c-espaco"></span><span class="cor c-marrom"></span></span> 5 faixas: marrom, preto, preto, vermelho</div>
+      </div>
+      <div class="bloco">
+        <h3>220 Ω: para o LED</h3>
+        <div class="linha-cor"><span class="faixas-cor"><span class="cor c-vermelho"></span><span class="cor c-vermelho"></span><span class="cor c-marrom"></span><span class="cor c-espaco"></span><span class="cor c-dourado"></span></span> 4 faixas: vermelho, vermelho, marrom</div>
+        <div class="linha-cor"><span class="faixas-cor"><span class="cor c-vermelho"></span><span class="cor c-vermelho"></span><span class="cor c-preto"></span><span class="cor c-preto"></span><span class="cor c-espaco"></span><span class="cor c-marrom"></span></span> 5 faixas: vermelho, vermelho, preto, preto</div>
+      </div>
+    </div>
+    <div class="dica-guia">Comece a ler pela ponta onde as faixas estão juntinhas. A faixa mais afastada é a precisão e não conta. Na dúvida, olhe a etiqueta da fita do kit.</div>
+
+    <div class="bloco" style="margin-top:18px">
+      <h3>Faltou algum resistor?</h3>
+      <ul>
+        <li><b>No lugar do 10 kΩ:</b> qualquer um de 4,7 kΩ a 100 kΩ.</li>
+        <li><b>No lugar do 220 Ω:</b> qualquer um de 150 Ω a 1 kΩ. Quanto maior, mais fraquinha a luz.</li>
+        <li><b>Dois em fila</b> somam os valores (2 × 100 Ω = 200 Ω). <b>Dois lado a lado</b> dão a metade (2 × 22 kΩ = 11 kΩ).</li>
+        <li>Não troque um pelo outro: 10 kΩ no LED deixa a luz quase apagada.</li>
+      </ul>
+    </div>
+
+    <div class="proximo"><button class="botao principal" id="ir-montagem">Tudo separado? Ir para o guia de montagem →</button></div>
+  </section>
+
+  <!-- Guia de montagem -->
+  <section class="tela leitura" id="tela-montagem" hidden>
+    <h2>🔧 Guia de montagem</h2>
+    <p class="subtitulo">Siga os passos na ordem. Monte a primeira tecla, teste, e depois faça as outras 11.</p>
+
+    <div class="bloco">
+      <h3>Antes de começar: nossos combinados</h3>
+      <ol>
+        <li>Monte tudo com o cabo USB <b>desligado</b>.</li>
+        <li>Encaixe as peças com calma: perna torta não entra no furo.</li>
+        <li>Antes de ligar o cabo, peça para um adulto conferir.</li>
+        <li>Errou? Tudo bem! Na protoboard é só tirar e encaixar de novo.</li>
+      </ol>
+    </div>
+
+    <div class="bloco passo-guia">
+      <div>
+        <h3>Conhecendo a protoboard</h3>
+        <ul>
+          <li><b>Trilhos + e −</b> (nas bordas): todos os furos da linha são ligados. Levam a energia.</li>
+          <li><b>Colunas</b> (no meio): os 5 furos de cada coluna são ligados entre si.</li>
+          <li><b>Canal do meio:</b> separa as colunas de cima das de baixo.</li>
+        </ul>
+        <div class="dica-guia atencao"><b>Atenção:</b> em muitas protoboards a linha vermelha e a azul têm uma falha no meio. Se a sua tiver, ligue os dois lados de cada linha com um fio curto, senão as teclas da esquerda não funcionam.</div>
+      </div>
+      <figure class="figura"><svg class="desenho-guia" role="img" aria-label="Protoboard vista de cima: trilho + destacado em vermelho na horizontal, uma coluna de 5 furos destacada em amarelo e o canal do meio em cinza" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 610"><rect x="8" y="8" width="744" height="594" rx="24" fill="#FBFBF6" stroke="#C9D3DC" stroke-width="3"/><rect x="44" y="44" width="672" height="32" rx="16" fill="#F7CFCB"/><rect x="44" y="24" width="672" height="5" rx="2" fill="#D9473F"/><rect x="44" y="124" width="672" height="5" rx="2" fill="#2F6FD6"/><rect x="248" y="152" width="28" height="196" rx="14" fill="#FBE3A0"/><rect x="30" y="362" width="700" height="34" rx="8" fill="#E2E9EF"/><circle cx="70" cy="60" r="7" fill="#9AA9B7"/><circle cx="70" cy="104" r="7" fill="#9AA9B7"/><circle cx="118" cy="60" r="7" fill="#9AA9B7"/><circle cx="118" cy="104" r="7" fill="#9AA9B7"/><circle cx="166" cy="60" r="7" fill="#9AA9B7"/><circle cx="166" cy="104" r="7" fill="#9AA9B7"/><circle cx="214" cy="60" r="7" fill="#9AA9B7"/><circle cx="214" cy="104" r="7" fill="#9AA9B7"/><circle cx="262" cy="60" r="7" fill="#9AA9B7"/><circle cx="262" cy="104" r="7" fill="#9AA9B7"/><circle cx="310" cy="60" r="7" fill="#9AA9B7"/><circle cx="310" cy="104" r="7" fill="#9AA9B7"/><circle cx="358" cy="60" r="7" fill="#9AA9B7"/><circle cx="358" cy="104" r="7" fill="#9AA9B7"/><circle cx="406" cy="60" r="7" fill="#9AA9B7"/><circle cx="406" cy="104" r="7" fill="#9AA9B7"/><circle cx="454" cy="60" r="7" fill="#9AA9B7"/><circle cx="454" cy="104" r="7" fill="#9AA9B7"/><circle cx="502" cy="60" r="7" fill="#9AA9B7"/><circle cx="502" cy="104" r="7" fill="#9AA9B7"/><circle cx="550" cy="60" r="7" fill="#9AA9B7"/><circle cx="550" cy="104" r="7" fill="#9AA9B7"/><circle cx="598" cy="60" r="7" fill="#9AA9B7"/><circle cx="598" cy="104" r="7" fill="#9AA9B7"/><circle cx="646" cy="60" r="7" fill="#9AA9B7"/><circle cx="646" cy="104" r="7" fill="#9AA9B7"/><circle cx="694" cy="60" r="7" fill="#9AA9B7"/><circle cx="694" cy="104" r="7" fill="#9AA9B7"/><circle cx="70" cy="170" r="7" fill="#9AA9B7"/><circle cx="70" cy="210" r="7" fill="#9AA9B7"/><circle cx="70" cy="250" r="7" fill="#9AA9B7"/><circle cx="70" cy="290" r="7" fill="#9AA9B7"/><circle cx="70" cy="330" r="7" fill="#9AA9B7"/><circle cx="70" cy="422" r="7" fill="#9AA9B7"/><circle cx="70" cy="462" r="7" fill="#9AA9B7"/><circle cx="70" cy="502" r="7" fill="#9AA9B7"/><circle cx="70" cy="542" r="7" fill="#9AA9B7"/><circle cx="70" cy="582" r="7" fill="#9AA9B7"/><circle cx="118" cy="170" r="7" fill="#9AA9B7"/><circle cx="118" cy="210" r="7" fill="#9AA9B7"/><circle cx="118" cy="250" r="7" fill="#9AA9B7"/><circle cx="118" cy="290" r="7" fill="#9AA9B7"/><circle cx="118" cy="330" r="7" fill="#9AA9B7"/><circle cx="118" cy="422" r="7" fill="#9AA9B7"/><circle cx="118" cy="462" r="7" fill="#9AA9B7"/><circle cx="118" cy="502" r="7" fill="#9AA9B7"/><circle cx="118" cy="542" r="7" fill="#9AA9B7"/><circle cx="118" cy="582" r="7" fill="#9AA9B7"/><circle cx="166" cy="170" r="7" fill="#9AA9B7"/><circle cx="166" cy="210" r="7" fill="#9AA9B7"/><circle cx="166" cy="250" r="7" fill="#9AA9B7"/><circle cx="166" cy="290" r="7" fill="#9AA9B7"/><circle cx="166" cy="330" r="7" fill="#9AA9B7"/><circle cx="166" cy="422" r="7" fill="#9AA9B7"/><circle cx="166" cy="462" r="7" fill="#9AA9B7"/><circle cx="166" cy="502" r="7" fill="#9AA9B7"/><circle cx="166" cy="542" r="7" fill="#9AA9B7"/><circle cx="166" cy="582" r="7" fill="#9AA9B7"/><circle cx="214" cy="170" r="7" fill="#9AA9B7"/><circle cx="214" cy="210" r="7" fill="#9AA9B7"/><circle cx="214" cy="250" r="7" fill="#9AA9B7"/><circle cx="214" cy="290" r="7" fill="#9AA9B7"/><circle cx="214" cy="330" r="7" fill="#9AA9B7"/><circle cx="214" cy="422" r="7" fill="#9AA9B7"/><circle cx="214" cy="462" r="7" fill="#9AA9B7"/><circle cx="214" cy="502" r="7" fill="#9AA9B7"/><circle cx="214" cy="542" r="7" fill="#9AA9B7"/><circle cx="214" cy="582" r="7" fill="#9AA9B7"/><circle cx="262" cy="170" r="7" fill="#9AA9B7"/><circle cx="262" cy="210" r="7" fill="#9AA9B7"/><circle cx="262" cy="250" r="7" fill="#9AA9B7"/><circle cx="262" cy="290" r="7" fill="#9AA9B7"/><circle cx="262" cy="330" r="7" fill="#9AA9B7"/><circle cx="262" cy="422" r="7" fill="#9AA9B7"/><circle cx="262" cy="462" r="7" fill="#9AA9B7"/><circle cx="262" cy="502" r="7" fill="#9AA9B7"/><circle cx="262" cy="542" r="7" fill="#9AA9B7"/><circle cx="262" cy="582" r="7" fill="#9AA9B7"/><circle cx="310" cy="170" r="7" fill="#9AA9B7"/><circle cx="310" cy="210" r="7" fill="#9AA9B7"/><circle cx="310" cy="250" r="7" fill="#9AA9B7"/><circle cx="310" cy="290" r="7" fill="#9AA9B7"/><circle cx="310" cy="330" r="7" fill="#9AA9B7"/><circle cx="310" cy="422" r="7" fill="#9AA9B7"/><circle cx="310" cy="462" r="7" fill="#9AA9B7"/><circle cx="310" cy="502" r="7" fill="#9AA9B7"/><circle cx="310" cy="542" r="7" fill="#9AA9B7"/><circle cx="310" cy="582" r="7" fill="#9AA9B7"/><circle cx="358" cy="170" r="7" fill="#9AA9B7"/><circle cx="358" cy="210" r="7" fill="#9AA9B7"/><circle cx="358" cy="250" r="7" fill="#9AA9B7"/><circle cx="358" cy="290" r="7" fill="#9AA9B7"/><circle cx="358" cy="330" r="7" fill="#9AA9B7"/><circle cx="358" cy="422" r="7" fill="#9AA9B7"/><circle cx="358" cy="462" r="7" fill="#9AA9B7"/><circle cx="358" cy="502" r="7" fill="#9AA9B7"/><circle cx="358" cy="542" r="7" fill="#9AA9B7"/><circle cx="358" cy="582" r="7" fill="#9AA9B7"/><circle cx="406" cy="170" r="7" fill="#9AA9B7"/><circle cx="406" cy="210" r="7" fill="#9AA9B7"/><circle cx="406" cy="250" r="7" fill="#9AA9B7"/><circle cx="406" cy="290" r="7" fill="#9AA9B7"/><circle cx="406" cy="330" r="7" fill="#9AA9B7"/><circle cx="406" cy="422" r="7" fill="#9AA9B7"/><circle cx="406" cy="462" r="7" fill="#9AA9B7"/><circle cx="406" cy="502" r="7" fill="#9AA9B7"/><circle cx="406" cy="542" r="7" fill="#9AA9B7"/><circle cx="406" cy="582" r="7" fill="#9AA9B7"/><circle cx="454" cy="170" r="7" fill="#9AA9B7"/><circle cx="454" cy="210" r="7" fill="#9AA9B7"/><circle cx="454" cy="250" r="7" fill="#9AA9B7"/><circle cx="454" cy="290" r="7" fill="#9AA9B7"/><circle cx="454" cy="330" r="7" fill="#9AA9B7"/><circle cx="454" cy="422" r="7" fill="#9AA9B7"/><circle cx="454" cy="462" r="7" fill="#9AA9B7"/><circle cx="454" cy="502" r="7" fill="#9AA9B7"/><circle cx="454" cy="542" r="7" fill="#9AA9B7"/><circle cx="454" cy="582" r="7" fill="#9AA9B7"/><circle cx="502" cy="170" r="7" fill="#9AA9B7"/><circle cx="502" cy="210" r="7" fill="#9AA9B7"/><circle cx="502" cy="250" r="7" fill="#9AA9B7"/><circle cx="502" cy="290" r="7" fill="#9AA9B7"/><circle cx="502" cy="330" r="7" fill="#9AA9B7"/><circle cx="502" cy="422" r="7" fill="#9AA9B7"/><circle cx="502" cy="462" r="7" fill="#9AA9B7"/><circle cx="502" cy="502" r="7" fill="#9AA9B7"/><circle cx="502" cy="542" r="7" fill="#9AA9B7"/><circle cx="502" cy="582" r="7" fill="#9AA9B7"/><circle cx="550" cy="170" r="7" fill="#9AA9B7"/><circle cx="550" cy="210" r="7" fill="#9AA9B7"/><circle cx="550" cy="250" r="7" fill="#9AA9B7"/><circle cx="550" cy="290" r="7" fill="#9AA9B7"/><circle cx="550" cy="330" r="7" fill="#9AA9B7"/><circle cx="550" cy="422" r="7" fill="#9AA9B7"/><circle cx="550" cy="462" r="7" fill="#9AA9B7"/><circle cx="550" cy="502" r="7" fill="#9AA9B7"/><circle cx="550" cy="542" r="7" fill="#9AA9B7"/><circle cx="550" cy="582" r="7" fill="#9AA9B7"/><circle cx="598" cy="170" r="7" fill="#9AA9B7"/><circle cx="598" cy="210" r="7" fill="#9AA9B7"/><circle cx="598" cy="250" r="7" fill="#9AA9B7"/><circle cx="598" cy="290" r="7" fill="#9AA9B7"/><circle cx="598" cy="330" r="7" fill="#9AA9B7"/><circle cx="598" cy="422" r="7" fill="#9AA9B7"/><circle cx="598" cy="462" r="7" fill="#9AA9B7"/><circle cx="598" cy="502" r="7" fill="#9AA9B7"/><circle cx="598" cy="542" r="7" fill="#9AA9B7"/><circle cx="598" cy="582" r="7" fill="#9AA9B7"/><circle cx="646" cy="170" r="7" fill="#9AA9B7"/><circle cx="646" cy="210" r="7" fill="#9AA9B7"/><circle cx="646" cy="250" r="7" fill="#9AA9B7"/><circle cx="646" cy="290" r="7" fill="#9AA9B7"/><circle cx="646" cy="330" r="7" fill="#9AA9B7"/><circle cx="646" cy="422" r="7" fill="#9AA9B7"/><circle cx="646" cy="462" r="7" fill="#9AA9B7"/><circle cx="646" cy="502" r="7" fill="#9AA9B7"/><circle cx="646" cy="542" r="7" fill="#9AA9B7"/><circle cx="646" cy="582" r="7" fill="#9AA9B7"/><circle cx="694" cy="170" r="7" fill="#9AA9B7"/><circle cx="694" cy="210" r="7" fill="#9AA9B7"/><circle cx="694" cy="250" r="7" fill="#9AA9B7"/><circle cx="694" cy="290" r="7" fill="#9AA9B7"/><circle cx="694" cy="330" r="7" fill="#9AA9B7"/><circle cx="694" cy="422" r="7" fill="#9AA9B7"/><circle cx="694" cy="462" r="7" fill="#9AA9B7"/><circle cx="694" cy="502" r="7" fill="#9AA9B7"/><circle cx="694" cy="542" r="7" fill="#9AA9B7"/><circle cx="694" cy="582" r="7" fill="#9AA9B7"/></svg><figcaption>Trilho + em vermelho, uma coluna em amarelo, canal do meio em cinza</figcaption></figure>
+    </div>
+
+    <div class="bloco passo-guia sem-figura">
+      <div>
+        <span class="numero">Passo 1</span>
+        <h3>Leve a energia para a protoboard</h3>
+        <ol>
+          <li>Deixe a protoboard com a <b>linha vermelha (+) em cima</b> e a <b>linha azul (−) embaixo</b>.</li>
+          <li>Com um fio vermelho, ligue o pino <b>5V</b> do Arduino ao trilho da linha vermelha (+).</li>
+          <li>Com um fio preto, ligue um pino <b>GND</b> do Arduino ao trilho da linha azul (−) de baixo.</li>
+        </ol>
+        <div class="dica-guia">Não gire mais a protoboard! Se ela virar, o + e o − trocam de lugar. Os pinos 5V e GND ficam na fileira <b>POWER</b> do Arduino.</div>
+      </div>
+    </div>
+
+    <div class="bloco passo-guia sem-figura">
+      <div>
+        <span class="numero">Passo 2</span>
+        <h3>Ligue o buzzer</h3>
+        <ol>
+          <li>Encaixe o buzzer num cantinho livre, na ponta direita da protoboard.</li>
+          <li>A perna <b>+</b> do buzzer vai ao pino <b>A1</b> do Arduino (fileira ANALOG IN).</li>
+          <li>A outra perna vai <b>direto no outro pino GND</b> do Arduino, ao lado do 5V.</li>
+        </ol>
+        <div class="dica-guia">O buzzer vai no A1, e não no +, porque é o Arduino que faz ele vibrar: 523 vezes por segundo para o Dó!</div>
+      </div>
+    </div>
+
+    <div class="bloco passo-guia">
+      <div>
+        <span class="numero">Passo 3</span>
+        <h3>Encaixe o botão do Dó</h3>
+        <ol>
+          <li>Coloque o botão na ponta esquerda da protoboard, atravessando o canal do meio.</li>
+          <li>Duas pernas ficam em cima e duas embaixo.</li>
+          <li>Empurre com cuidado até ele ficar firme.</li>
+        </ol>
+        <div class="dica-guia">Vamos usar duas pernas em diagonal: a de cima à esquerda e a de baixo à direita. Assim funciona sempre, não importa como o botão foi girado.</div>
+      </div>
+      <figure class="figura"><svg class="desenho-guia" role="img" aria-label="Botão encaixado atravessando o canal do meio, com a perna de cima à esquerda e a de baixo à direita marcadas" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 720"><rect x="8" y="6" width="604" height="708" rx="20" fill="#FBFBF6" stroke="#C9D3DC" stroke-width="3"/><rect x="30" y="20" width="560" height="5" rx="2" fill="#D9473F"/><rect x="30" y="692" width="560" height="5" rx="2" fill="#2F6FD6"/><rect x="24" y="338" width="572" height="44" rx="8" fill="#E2E9EF"/><circle cx="70" cy="48" r="7" fill="#9AA9B7"/><circle cx="70" cy="664" r="7" fill="#9AA9B7"/><circle cx="70" cy="120" r="7" fill="#9AA9B7"/><circle cx="70" cy="168" r="7" fill="#9AA9B7"/><circle cx="70" cy="216" r="7" fill="#9AA9B7"/><circle cx="70" cy="264" r="7" fill="#9AA9B7"/><circle cx="70" cy="312" r="7" fill="#9AA9B7"/><circle cx="70" cy="408" r="7" fill="#9AA9B7"/><circle cx="70" cy="456" r="7" fill="#9AA9B7"/><circle cx="70" cy="504" r="7" fill="#9AA9B7"/><circle cx="70" cy="552" r="7" fill="#9AA9B7"/><circle cx="70" cy="600" r="7" fill="#9AA9B7"/><circle cx="118" cy="48" r="7" fill="#9AA9B7"/><circle cx="118" cy="664" r="7" fill="#9AA9B7"/><circle cx="118" cy="120" r="7" fill="#9AA9B7"/><circle cx="118" cy="168" r="7" fill="#9AA9B7"/><circle cx="118" cy="216" r="7" fill="#9AA9B7"/><circle cx="118" cy="264" r="7" fill="#9AA9B7"/><circle cx="118" cy="312" r="7" fill="#9AA9B7"/><circle cx="118" cy="408" r="7" fill="#9AA9B7"/><circle cx="118" cy="456" r="7" fill="#9AA9B7"/><circle cx="118" cy="504" r="7" fill="#9AA9B7"/><circle cx="118" cy="552" r="7" fill="#9AA9B7"/><circle cx="118" cy="600" r="7" fill="#9AA9B7"/><circle cx="166" cy="48" r="7" fill="#9AA9B7"/><circle cx="166" cy="664" r="7" fill="#9AA9B7"/><circle cx="166" cy="120" r="7" fill="#9AA9B7"/><circle cx="166" cy="168" r="7" fill="#9AA9B7"/><circle cx="166" cy="216" r="7" fill="#9AA9B7"/><circle cx="166" cy="264" r="7" fill="#9AA9B7"/><circle cx="166" cy="312" r="7" fill="#9AA9B7"/><circle cx="166" cy="408" r="7" fill="#9AA9B7"/><circle cx="166" cy="456" r="7" fill="#9AA9B7"/><circle cx="166" cy="504" r="7" fill="#9AA9B7"/><circle cx="166" cy="552" r="7" fill="#9AA9B7"/><circle cx="166" cy="600" r="7" fill="#9AA9B7"/><circle cx="214" cy="48" r="7" fill="#9AA9B7"/><circle cx="214" cy="664" r="7" fill="#9AA9B7"/><circle cx="214" cy="120" r="7" fill="#9AA9B7"/><circle cx="214" cy="168" r="7" fill="#9AA9B7"/><circle cx="214" cy="216" r="7" fill="#9AA9B7"/><circle cx="214" cy="264" r="7" fill="#9AA9B7"/><circle cx="214" cy="312" r="7" fill="#9AA9B7"/><circle cx="214" cy="408" r="7" fill="#9AA9B7"/><circle cx="214" cy="456" r="7" fill="#9AA9B7"/><circle cx="214" cy="504" r="7" fill="#9AA9B7"/><circle cx="214" cy="552" r="7" fill="#9AA9B7"/><circle cx="214" cy="600" r="7" fill="#9AA9B7"/><circle cx="262" cy="48" r="7" fill="#9AA9B7"/><circle cx="262" cy="664" r="7" fill="#9AA9B7"/><circle cx="262" cy="120" r="7" fill="#9AA9B7"/><circle cx="262" cy="168" r="7" fill="#9AA9B7"/><circle cx="262" cy="216" r="7" fill="#9AA9B7"/><circle cx="262" cy="264" r="7" fill="#9AA9B7"/><circle cx="262" cy="312" r="7" fill="#9AA9B7"/><circle cx="262" cy="408" r="7" fill="#9AA9B7"/><circle cx="262" cy="456" r="7" fill="#9AA9B7"/><circle cx="262" cy="504" r="7" fill="#9AA9B7"/><circle cx="262" cy="552" r="7" fill="#9AA9B7"/><circle cx="262" cy="600" r="7" fill="#9AA9B7"/><circle cx="310" cy="48" r="7" fill="#9AA9B7"/><circle cx="310" cy="664" r="7" fill="#9AA9B7"/><circle cx="310" cy="120" r="7" fill="#9AA9B7"/><circle cx="310" cy="168" r="7" fill="#9AA9B7"/><circle cx="310" cy="216" r="7" fill="#9AA9B7"/><circle cx="310" cy="264" r="7" fill="#9AA9B7"/><circle cx="310" cy="312" r="7" fill="#9AA9B7"/><circle cx="310" cy="408" r="7" fill="#9AA9B7"/><circle cx="310" cy="456" r="7" fill="#9AA9B7"/><circle cx="310" cy="504" r="7" fill="#9AA9B7"/><circle cx="310" cy="552" r="7" fill="#9AA9B7"/><circle cx="310" cy="600" r="7" fill="#9AA9B7"/><circle cx="358" cy="48" r="7" fill="#9AA9B7"/><circle cx="358" cy="664" r="7" fill="#9AA9B7"/><circle cx="358" cy="120" r="7" fill="#9AA9B7"/><circle cx="358" cy="168" r="7" fill="#9AA9B7"/><circle cx="358" cy="216" r="7" fill="#9AA9B7"/><circle cx="358" cy="264" r="7" fill="#9AA9B7"/><circle cx="358" cy="312" r="7" fill="#9AA9B7"/><circle cx="358" cy="408" r="7" fill="#9AA9B7"/><circle cx="358" cy="456" r="7" fill="#9AA9B7"/><circle cx="358" cy="504" r="7" fill="#9AA9B7"/><circle cx="358" cy="552" r="7" fill="#9AA9B7"/><circle cx="358" cy="600" r="7" fill="#9AA9B7"/><circle cx="406" cy="48" r="7" fill="#9AA9B7"/><circle cx="406" cy="664" r="7" fill="#9AA9B7"/><circle cx="406" cy="120" r="7" fill="#9AA9B7"/><circle cx="406" cy="168" r="7" fill="#9AA9B7"/><circle cx="406" cy="216" r="7" fill="#9AA9B7"/><circle cx="406" cy="264" r="7" fill="#9AA9B7"/><circle cx="406" cy="312" r="7" fill="#9AA9B7"/><circle cx="406" cy="408" r="7" fill="#9AA9B7"/><circle cx="406" cy="456" r="7" fill="#9AA9B7"/><circle cx="406" cy="504" r="7" fill="#9AA9B7"/><circle cx="406" cy="552" r="7" fill="#9AA9B7"/><circle cx="406" cy="600" r="7" fill="#9AA9B7"/><circle cx="454" cy="48" r="7" fill="#9AA9B7"/><circle cx="454" cy="664" r="7" fill="#9AA9B7"/><circle cx="454" cy="120" r="7" fill="#9AA9B7"/><circle cx="454" cy="168" r="7" fill="#9AA9B7"/><circle cx="454" cy="216" r="7" fill="#9AA9B7"/><circle cx="454" cy="264" r="7" fill="#9AA9B7"/><circle cx="454" cy="312" r="7" fill="#9AA9B7"/><circle cx="454" cy="408" r="7" fill="#9AA9B7"/><circle cx="454" cy="456" r="7" fill="#9AA9B7"/><circle cx="454" cy="504" r="7" fill="#9AA9B7"/><circle cx="454" cy="552" r="7" fill="#9AA9B7"/><circle cx="454" cy="600" r="7" fill="#9AA9B7"/><circle cx="502" cy="48" r="7" fill="#9AA9B7"/><circle cx="502" cy="664" r="7" fill="#9AA9B7"/><circle cx="502" cy="120" r="7" fill="#9AA9B7"/><circle cx="502" cy="168" r="7" fill="#9AA9B7"/><circle cx="502" cy="216" r="7" fill="#9AA9B7"/><circle cx="502" cy="264" r="7" fill="#9AA9B7"/><circle cx="502" cy="312" r="7" fill="#9AA9B7"/><circle cx="502" cy="408" r="7" fill="#9AA9B7"/><circle cx="502" cy="456" r="7" fill="#9AA9B7"/><circle cx="502" cy="504" r="7" fill="#9AA9B7"/><circle cx="502" cy="552" r="7" fill="#9AA9B7"/><circle cx="502" cy="600" r="7" fill="#9AA9B7"/><circle cx="550" cy="48" r="7" fill="#9AA9B7"/><circle cx="550" cy="664" r="7" fill="#9AA9B7"/><circle cx="550" cy="120" r="7" fill="#9AA9B7"/><circle cx="550" cy="168" r="7" fill="#9AA9B7"/><circle cx="550" cy="216" r="7" fill="#9AA9B7"/><circle cx="550" cy="264" r="7" fill="#9AA9B7"/><circle cx="550" cy="312" r="7" fill="#9AA9B7"/><circle cx="550" cy="408" r="7" fill="#9AA9B7"/><circle cx="550" cy="456" r="7" fill="#9AA9B7"/><circle cx="550" cy="504" r="7" fill="#9AA9B7"/><circle cx="550" cy="552" r="7" fill="#9AA9B7"/><circle cx="550" cy="600" r="7" fill="#9AA9B7"/><rect x="190" y="288" width="144" height="144" rx="12" fill="#2E3338"/><circle cx="262" cy="360" r="46" fill="#14181C"/><rect x="206" y="304" width="16" height="16" rx="3" fill="#C7D0D8"/><rect x="302" y="304" width="16" height="16" rx="3" fill="#C7D0D8"/><rect x="206" y="400" width="16" height="16" rx="3" fill="#C7D0D8"/><rect x="302" y="400" width="16" height="16" rx="3" fill="#C7D0D8"/><circle cx="214" cy="312" r="13" fill="none" stroke="#F5B82E" stroke-width="5"/><circle cx="310" cy="408" r="13" fill="none" stroke="#F5B82E" stroke-width="5"/><rect x="176" y="274" width="172" height="172" rx="14" fill="none" stroke="#F5B82E" stroke-width="6" stroke-dasharray="14 10"/></svg><figcaption>O botão atravessa o canal do meio</figcaption></figure>
+    </div>
+
+    <div class="bloco passo-guia">
+      <div>
+        <span class="numero">Passo 4</span>
+        <h3>Ligue o botão no +</h3>
+        <ol>
+          <li>Pegue um fio vermelho.</li>
+          <li>Encaixe uma ponta na coluna da perna de cima à esquerda do botão.</li>
+          <li>Encaixe a outra ponta no trilho + (linha vermelha, em cima).</li>
+        </ol>
+        <div class="dica-guia">Agora um lado do botão recebe energia. Quando você aperta, ela passa para o outro lado.</div>
+      </div>
+      <figure class="figura"><svg class="desenho-guia" role="img" aria-label="Fio vermelho ligando a coluna da perna de cima à esquerda do botão até o trilho + em cima" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 720"><rect x="8" y="6" width="604" height="708" rx="20" fill="#FBFBF6" stroke="#C9D3DC" stroke-width="3"/><rect x="30" y="20" width="560" height="5" rx="2" fill="#D9473F"/><rect x="30" y="692" width="560" height="5" rx="2" fill="#2F6FD6"/><rect x="24" y="338" width="572" height="44" rx="8" fill="#E2E9EF"/><circle cx="70" cy="48" r="7" fill="#9AA9B7"/><circle cx="70" cy="664" r="7" fill="#9AA9B7"/><circle cx="70" cy="120" r="7" fill="#9AA9B7"/><circle cx="70" cy="168" r="7" fill="#9AA9B7"/><circle cx="70" cy="216" r="7" fill="#9AA9B7"/><circle cx="70" cy="264" r="7" fill="#9AA9B7"/><circle cx="70" cy="312" r="7" fill="#9AA9B7"/><circle cx="70" cy="408" r="7" fill="#9AA9B7"/><circle cx="70" cy="456" r="7" fill="#9AA9B7"/><circle cx="70" cy="504" r="7" fill="#9AA9B7"/><circle cx="70" cy="552" r="7" fill="#9AA9B7"/><circle cx="70" cy="600" r="7" fill="#9AA9B7"/><circle cx="118" cy="48" r="7" fill="#9AA9B7"/><circle cx="118" cy="664" r="7" fill="#9AA9B7"/><circle cx="118" cy="120" r="7" fill="#9AA9B7"/><circle cx="118" cy="168" r="7" fill="#9AA9B7"/><circle cx="118" cy="216" r="7" fill="#9AA9B7"/><circle cx="118" cy="264" r="7" fill="#9AA9B7"/><circle cx="118" cy="312" r="7" fill="#9AA9B7"/><circle cx="118" cy="408" r="7" fill="#9AA9B7"/><circle cx="118" cy="456" r="7" fill="#9AA9B7"/><circle cx="118" cy="504" r="7" fill="#9AA9B7"/><circle cx="118" cy="552" r="7" fill="#9AA9B7"/><circle cx="118" cy="600" r="7" fill="#9AA9B7"/><circle cx="166" cy="48" r="7" fill="#9AA9B7"/><circle cx="166" cy="664" r="7" fill="#9AA9B7"/><circle cx="166" cy="120" r="7" fill="#9AA9B7"/><circle cx="166" cy="168" r="7" fill="#9AA9B7"/><circle cx="166" cy="216" r="7" fill="#9AA9B7"/><circle cx="166" cy="264" r="7" fill="#9AA9B7"/><circle cx="166" cy="312" r="7" fill="#9AA9B7"/><circle cx="166" cy="408" r="7" fill="#9AA9B7"/><circle cx="166" cy="456" r="7" fill="#9AA9B7"/><circle cx="166" cy="504" r="7" fill="#9AA9B7"/><circle cx="166" cy="552" r="7" fill="#9AA9B7"/><circle cx="166" cy="600" r="7" fill="#9AA9B7"/><circle cx="214" cy="48" r="7" fill="#9AA9B7"/><circle cx="214" cy="664" r="7" fill="#9AA9B7"/><circle cx="214" cy="120" r="7" fill="#9AA9B7"/><circle cx="214" cy="168" r="7" fill="#9AA9B7"/><circle cx="214" cy="216" r="7" fill="#9AA9B7"/><circle cx="214" cy="264" r="7" fill="#9AA9B7"/><circle cx="214" cy="312" r="7" fill="#9AA9B7"/><circle cx="214" cy="408" r="7" fill="#9AA9B7"/><circle cx="214" cy="456" r="7" fill="#9AA9B7"/><circle cx="214" cy="504" r="7" fill="#9AA9B7"/><circle cx="214" cy="552" r="7" fill="#9AA9B7"/><circle cx="214" cy="600" r="7" fill="#9AA9B7"/><circle cx="262" cy="48" r="7" fill="#9AA9B7"/><circle cx="262" cy="664" r="7" fill="#9AA9B7"/><circle cx="262" cy="120" r="7" fill="#9AA9B7"/><circle cx="262" cy="168" r="7" fill="#9AA9B7"/><circle cx="262" cy="216" r="7" fill="#9AA9B7"/><circle cx="262" cy="264" r="7" fill="#9AA9B7"/><circle cx="262" cy="312" r="7" fill="#9AA9B7"/><circle cx="262" cy="408" r="7" fill="#9AA9B7"/><circle cx="262" cy="456" r="7" fill="#9AA9B7"/><circle cx="262" cy="504" r="7" fill="#9AA9B7"/><circle cx="262" cy="552" r="7" fill="#9AA9B7"/><circle cx="262" cy="600" r="7" fill="#9AA9B7"/><circle cx="310" cy="48" r="7" fill="#9AA9B7"/><circle cx="310" cy="664" r="7" fill="#9AA9B7"/><circle cx="310" cy="120" r="7" fill="#9AA9B7"/><circle cx="310" cy="168" r="7" fill="#9AA9B7"/><circle cx="310" cy="216" r="7" fill="#9AA9B7"/><circle cx="310" cy="264" r="7" fill="#9AA9B7"/><circle cx="310" cy="312" r="7" fill="#9AA9B7"/><circle cx="310" cy="408" r="7" fill="#9AA9B7"/><circle cx="310" cy="456" r="7" fill="#9AA9B7"/><circle cx="310" cy="504" r="7" fill="#9AA9B7"/><circle cx="310" cy="552" r="7" fill="#9AA9B7"/><circle cx="310" cy="600" r="7" fill="#9AA9B7"/><circle cx="358" cy="48" r="7" fill="#9AA9B7"/><circle cx="358" cy="664" r="7" fill="#9AA9B7"/><circle cx="358" cy="120" r="7" fill="#9AA9B7"/><circle cx="358" cy="168" r="7" fill="#9AA9B7"/><circle cx="358" cy="216" r="7" fill="#9AA9B7"/><circle cx="358" cy="264" r="7" fill="#9AA9B7"/><circle cx="358" cy="312" r="7" fill="#9AA9B7"/><circle cx="358" cy="408" r="7" fill="#9AA9B7"/><circle cx="358" cy="456" r="7" fill="#9AA9B7"/><circle cx="358" cy="504" r="7" fill="#9AA9B7"/><circle cx="358" cy="552" r="7" fill="#9AA9B7"/><circle cx="358" cy="600" r="7" fill="#9AA9B7"/><circle cx="406" cy="48" r="7" fill="#9AA9B7"/><circle cx="406" cy="664" r="7" fill="#9AA9B7"/><circle cx="406" cy="120" r="7" fill="#9AA9B7"/><circle cx="406" cy="168" r="7" fill="#9AA9B7"/><circle cx="406" cy="216" r="7" fill="#9AA9B7"/><circle cx="406" cy="264" r="7" fill="#9AA9B7"/><circle cx="406" cy="312" r="7" fill="#9AA9B7"/><circle cx="406" cy="408" r="7" fill="#9AA9B7"/><circle cx="406" cy="456" r="7" fill="#9AA9B7"/><circle cx="406" cy="504" r="7" fill="#9AA9B7"/><circle cx="406" cy="552" r="7" fill="#9AA9B7"/><circle cx="406" cy="600" r="7" fill="#9AA9B7"/><circle cx="454" cy="48" r="7" fill="#9AA9B7"/><circle cx="454" cy="664" r="7" fill="#9AA9B7"/><circle cx="454" cy="120" r="7" fill="#9AA9B7"/><circle cx="454" cy="168" r="7" fill="#9AA9B7"/><circle cx="454" cy="216" r="7" fill="#9AA9B7"/><circle cx="454" cy="264" r="7" fill="#9AA9B7"/><circle cx="454" cy="312" r="7" fill="#9AA9B7"/><circle cx="454" cy="408" r="7" fill="#9AA9B7"/><circle cx="454" cy="456" r="7" fill="#9AA9B7"/><circle cx="454" cy="504" r="7" fill="#9AA9B7"/><circle cx="454" cy="552" r="7" fill="#9AA9B7"/><circle cx="454" cy="600" r="7" fill="#9AA9B7"/><circle cx="502" cy="48" r="7" fill="#9AA9B7"/><circle cx="502" cy="664" r="7" fill="#9AA9B7"/><circle cx="502" cy="120" r="7" fill="#9AA9B7"/><circle cx="502" cy="168" r="7" fill="#9AA9B7"/><circle cx="502" cy="216" r="7" fill="#9AA9B7"/><circle cx="502" cy="264" r="7" fill="#9AA9B7"/><circle cx="502" cy="312" r="7" fill="#9AA9B7"/><circle cx="502" cy="408" r="7" fill="#9AA9B7"/><circle cx="502" cy="456" r="7" fill="#9AA9B7"/><circle cx="502" cy="504" r="7" fill="#9AA9B7"/><circle cx="502" cy="552" r="7" fill="#9AA9B7"/><circle cx="502" cy="600" r="7" fill="#9AA9B7"/><circle cx="550" cy="48" r="7" fill="#9AA9B7"/><circle cx="550" cy="664" r="7" fill="#9AA9B7"/><circle cx="550" cy="120" r="7" fill="#9AA9B7"/><circle cx="550" cy="168" r="7" fill="#9AA9B7"/><circle cx="550" cy="216" r="7" fill="#9AA9B7"/><circle cx="550" cy="264" r="7" fill="#9AA9B7"/><circle cx="550" cy="312" r="7" fill="#9AA9B7"/><circle cx="550" cy="408" r="7" fill="#9AA9B7"/><circle cx="550" cy="456" r="7" fill="#9AA9B7"/><circle cx="550" cy="504" r="7" fill="#9AA9B7"/><circle cx="550" cy="552" r="7" fill="#9AA9B7"/><circle cx="550" cy="600" r="7" fill="#9AA9B7"/><rect x="190" y="288" width="144" height="144" rx="12" fill="#2E3338"/><circle cx="262" cy="360" r="46" fill="#14181C"/><rect x="206" y="304" width="16" height="16" rx="3" fill="#C7D0D8"/><rect x="302" y="304" width="16" height="16" rx="3" fill="#C7D0D8"/><rect x="206" y="400" width="16" height="16" rx="3" fill="#C7D0D8"/><rect x="302" y="400" width="16" height="16" rx="3" fill="#C7D0D8"/><circle cx="214" cy="312" r="13" fill="none" stroke="#F5B82E" stroke-width="5"/><circle cx="310" cy="408" r="13" fill="none" stroke="#F5B82E" stroke-width="5"/><line x1="214" y1="264" x2="214" y2="48" stroke="#D9473F" stroke-width="12" stroke-linecap="round"/><circle cx="214" cy="264" r="8" fill="#8E2A24"/><circle cx="214" cy="48" r="8" fill="#8E2A24"/><rect x="196" y="30" width="36" height="252" rx="14" fill="none" stroke="#F5B82E" stroke-width="6" stroke-dasharray="14 10"/></svg><figcaption>Fio vermelho até o trilho +</figcaption></figure>
+    </div>
+
+    <div class="bloco passo-guia">
+      <div>
+        <span class="numero">Passo 5</span>
+        <h3>Ligue o botão no Arduino</h3>
+        <ol>
+          <li>Na coluna da perna de baixo à direita, encaixe um <b>resistor de 10 kΩ</b> até o trilho − (linha azul, embaixo).</li>
+          <li>Na mesma coluna, encaixe um fio verde e leve até o <b>pino 2</b> do Arduino.</li>
+        </ol>
+        <div class="dica-guia">O resistor de 10 kΩ deixa o botão quieto quando ninguém aperta. Sem ele, o piano toca sozinho!</div>
+      </div>
+      <figure class="figura"><svg class="desenho-guia" role="img" aria-label="Resistor de 10 quilo-ohms da coluna da perna de baixo à direita até o trilho menos, e fio verde da mesma coluna saindo para o pino 2 do Arduino" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 720"><rect x="8" y="6" width="604" height="708" rx="20" fill="#FBFBF6" stroke="#C9D3DC" stroke-width="3"/><rect x="30" y="20" width="560" height="5" rx="2" fill="#D9473F"/><rect x="30" y="692" width="560" height="5" rx="2" fill="#2F6FD6"/><rect x="24" y="338" width="572" height="44" rx="8" fill="#E2E9EF"/><circle cx="70" cy="48" r="7" fill="#9AA9B7"/><circle cx="70" cy="664" r="7" fill="#9AA9B7"/><circle cx="70" cy="120" r="7" fill="#9AA9B7"/><circle cx="70" cy="168" r="7" fill="#9AA9B7"/><circle cx="70" cy="216" r="7" fill="#9AA9B7"/><circle cx="70" cy="264" r="7" fill="#9AA9B7"/><circle cx="70" cy="312" r="7" fill="#9AA9B7"/><circle cx="70" cy="408" r="7" fill="#9AA9B7"/><circle cx="70" cy="456" r="7" fill="#9AA9B7"/><circle cx="70" cy="504" r="7" fill="#9AA9B7"/><circle cx="70" cy="552" r="7" fill="#9AA9B7"/><circle cx="70" cy="600" r="7" fill="#9AA9B7"/><circle cx="118" cy="48" r="7" fill="#9AA9B7"/><circle cx="118" cy="664" r="7" fill="#9AA9B7"/><circle cx="118" cy="120" r="7" fill="#9AA9B7"/><circle cx="118" cy="168" r="7" fill="#9AA9B7"/><circle cx="118" cy="216" r="7" fill="#9AA9B7"/><circle cx="118" cy="264" r="7" fill="#9AA9B7"/><circle cx="118" cy="312" r="7" fill="#9AA9B7"/><circle cx="118" cy="408" r="7" fill="#9AA9B7"/><circle cx="118" cy="456" r="7" fill="#9AA9B7"/><circle cx="118" cy="504" r="7" fill="#9AA9B7"/><circle cx="118" cy="552" r="7" fill="#9AA9B7"/><circle cx="118" cy="600" r="7" fill="#9AA9B7"/><circle cx="166" cy="48" r="7" fill="#9AA9B7"/><circle cx="166" cy="664" r="7" fill="#9AA9B7"/><circle cx="166" cy="120" r="7" fill="#9AA9B7"/><circle cx="166" cy="168" r="7" fill="#9AA9B7"/><circle cx="166" cy="216" r="7" fill="#9AA9B7"/><circle cx="166" cy="264" r="7" fill="#9AA9B7"/><circle cx="166" cy="312" r="7" fill="#9AA9B7"/><circle cx="166" cy="408" r="7" fill="#9AA9B7"/><circle cx="166" cy="456" r="7" fill="#9AA9B7"/><circle cx="166" cy="504" r="7" fill="#9AA9B7"/><circle cx="166" cy="552" r="7" fill="#9AA9B7"/><circle cx="166" cy="600" r="7" fill="#9AA9B7"/><circle cx="214" cy="48" r="7" fill="#9AA9B7"/><circle cx="214" cy="664" r="7" fill="#9AA9B7"/><circle cx="214" cy="120" r="7" fill="#9AA9B7"/><circle cx="214" cy="168" r="7" fill="#9AA9B7"/><circle cx="214" cy="216" r="7" fill="#9AA9B7"/><circle cx="214" cy="264" r="7" fill="#9AA9B7"/><circle cx="214" cy="312" r="7" fill="#9AA9B7"/><circle cx="214" cy="408" r="7" fill="#9AA9B7"/><circle cx="214" cy="456" r="7" fill="#9AA9B7"/><circle cx="214" cy="504" r="7" fill="#9AA9B7"/><circle cx="214" cy="552" r="7" fill="#9AA9B7"/><circle cx="214" cy="600" r="7" fill="#9AA9B7"/><circle cx="262" cy="48" r="7" fill="#9AA9B7"/><circle cx="262" cy="664" r="7" fill="#9AA9B7"/><circle cx="262" cy="120" r="7" fill="#9AA9B7"/><circle cx="262" cy="168" r="7" fill="#9AA9B7"/><circle cx="262" cy="216" r="7" fill="#9AA9B7"/><circle cx="262" cy="264" r="7" fill="#9AA9B7"/><circle cx="262" cy="312" r="7" fill="#9AA9B7"/><circle cx="262" cy="408" r="7" fill="#9AA9B7"/><circle cx="262" cy="456" r="7" fill="#9AA9B7"/><circle cx="262" cy="504" r="7" fill="#9AA9B7"/><circle cx="262" cy="552" r="7" fill="#9AA9B7"/><circle cx="262" cy="600" r="7" fill="#9AA9B7"/><circle cx="310" cy="48" r="7" fill="#9AA9B7"/><circle cx="310" cy="664" r="7" fill="#9AA9B7"/><circle cx="310" cy="120" r="7" fill="#9AA9B7"/><circle cx="310" cy="168" r="7" fill="#9AA9B7"/><circle cx="310" cy="216" r="7" fill="#9AA9B7"/><circle cx="310" cy="264" r="7" fill="#9AA9B7"/><circle cx="310" cy="312" r="7" fill="#9AA9B7"/><circle cx="310" cy="408" r="7" fill="#9AA9B7"/><circle cx="310" cy="456" r="7" fill="#9AA9B7"/><circle cx="310" cy="504" r="7" fill="#9AA9B7"/><circle cx="310" cy="552" r="7" fill="#9AA9B7"/><circle cx="310" cy="600" r="7" fill="#9AA9B7"/><circle cx="358" cy="48" r="7" fill="#9AA9B7"/><circle cx="358" cy="664" r="7" fill="#9AA9B7"/><circle cx="358" cy="120" r="7" fill="#9AA9B7"/><circle cx="358" cy="168" r="7" fill="#9AA9B7"/><circle cx="358" cy="216" r="7" fill="#9AA9B7"/><circle cx="358" cy="264" r="7" fill="#9AA9B7"/><circle cx="358" cy="312" r="7" fill="#9AA9B7"/><circle cx="358" cy="408" r="7" fill="#9AA9B7"/><circle cx="358" cy="456" r="7" fill="#9AA9B7"/><circle cx="358" cy="504" r="7" fill="#9AA9B7"/><circle cx="358" cy="552" r="7" fill="#9AA9B7"/><circle cx="358" cy="600" r="7" fill="#9AA9B7"/><circle cx="406" cy="48" r="7" fill="#9AA9B7"/><circle cx="406" cy="664" r="7" fill="#9AA9B7"/><circle cx="406" cy="120" r="7" fill="#9AA9B7"/><circle cx="406" cy="168" r="7" fill="#9AA9B7"/><circle cx="406" cy="216" r="7" fill="#9AA9B7"/><circle cx="406" cy="264" r="7" fill="#9AA9B7"/><circle cx="406" cy="312" r="7" fill="#9AA9B7"/><circle cx="406" cy="408" r="7" fill="#9AA9B7"/><circle cx="406" cy="456" r="7" fill="#9AA9B7"/><circle cx="406" cy="504" r="7" fill="#9AA9B7"/><circle cx="406" cy="552" r="7" fill="#9AA9B7"/><circle cx="406" cy="600" r="7" fill="#9AA9B7"/><circle cx="454" cy="48" r="7" fill="#9AA9B7"/><circle cx="454" cy="664" r="7" fill="#9AA9B7"/><circle cx="454" cy="120" r="7" fill="#9AA9B7"/><circle cx="454" cy="168" r="7" fill="#9AA9B7"/><circle cx="454" cy="216" r="7" fill="#9AA9B7"/><circle cx="454" cy="264" r="7" fill="#9AA9B7"/><circle cx="454" cy="312" r="7" fill="#9AA9B7"/><circle cx="454" cy="408" r="7" fill="#9AA9B7"/><circle cx="454" cy="456" r="7" fill="#9AA9B7"/><circle cx="454" cy="504" r="7" fill="#9AA9B7"/><circle cx="454" cy="552" r="7" fill="#9AA9B7"/><circle cx="454" cy="600" r="7" fill="#9AA9B7"/><circle cx="502" cy="48" r="7" fill="#9AA9B7"/><circle cx="502" cy="664" r="7" fill="#9AA9B7"/><circle cx="502" cy="120" r="7" fill="#9AA9B7"/><circle cx="502" cy="168" r="7" fill="#9AA9B7"/><circle cx="502" cy="216" r="7" fill="#9AA9B7"/><circle cx="502" cy="264" r="7" fill="#9AA9B7"/><circle cx="502" cy="312" r="7" fill="#9AA9B7"/><circle cx="502" cy="408" r="7" fill="#9AA9B7"/><circle cx="502" cy="456" r="7" fill="#9AA9B7"/><circle cx="502" cy="504" r="7" fill="#9AA9B7"/><circle cx="502" cy="552" r="7" fill="#9AA9B7"/><circle cx="502" cy="600" r="7" fill="#9AA9B7"/><circle cx="550" cy="48" r="7" fill="#9AA9B7"/><circle cx="550" cy="664" r="7" fill="#9AA9B7"/><circle cx="550" cy="120" r="7" fill="#9AA9B7"/><circle cx="550" cy="168" r="7" fill="#9AA9B7"/><circle cx="550" cy="216" r="7" fill="#9AA9B7"/><circle cx="550" cy="264" r="7" fill="#9AA9B7"/><circle cx="550" cy="312" r="7" fill="#9AA9B7"/><circle cx="550" cy="408" r="7" fill="#9AA9B7"/><circle cx="550" cy="456" r="7" fill="#9AA9B7"/><circle cx="550" cy="504" r="7" fill="#9AA9B7"/><circle cx="550" cy="552" r="7" fill="#9AA9B7"/><circle cx="550" cy="600" r="7" fill="#9AA9B7"/><rect x="190" y="288" width="144" height="144" rx="12" fill="#2E3338"/><circle cx="262" cy="360" r="46" fill="#14181C"/><rect x="206" y="304" width="16" height="16" rx="3" fill="#C7D0D8"/><rect x="302" y="304" width="16" height="16" rx="3" fill="#C7D0D8"/><rect x="206" y="400" width="16" height="16" rx="3" fill="#C7D0D8"/><rect x="302" y="400" width="16" height="16" rx="3" fill="#C7D0D8"/><circle cx="214" cy="312" r="13" fill="none" stroke="#F5B82E" stroke-width="5"/><circle cx="310" cy="408" r="13" fill="none" stroke="#F5B82E" stroke-width="5"/><line x1="214" y1="264" x2="214" y2="48" stroke="#D9473F" stroke-width="12" stroke-linecap="round"/><circle cx="214" cy="264" r="8" fill="#8E2A24"/><circle cx="214" cy="48" r="8" fill="#8E2A24"/><line x1="310" y1="552" x2="310" y2="664" stroke="#8A949E" stroke-width="5" stroke-linecap="round"/><rect x="297" y="576" width="26" height="64" rx="10" fill="#E9CFA4" stroke="#B89A6E" stroke-width="2"/><rect x="297" y="586" width="26" height="8" fill="#6B3E26"/><rect x="297" y="601" width="26" height="8" fill="#1B1B1B"/><rect x="297" y="616" width="26" height="8" fill="#E67E22"/><circle cx="310" cy="552" r="6" fill="#5B6670"/><circle cx="310" cy="664" r="6" fill="#5B6670"/><path d="M310 504 C 250 504, 230 600, 160 600 L 4 600" fill="none" stroke="#2E9E5B" stroke-width="12" stroke-linecap="round"/><circle cx="310" cy="504" r="8" fill="#1D6A3C"/><rect x="292" y="486" width="36" height="196" rx="14" fill="none" stroke="#F5B82E" stroke-width="6" stroke-dasharray="14 10"/><rect x="4" y="584" width="200" height="32" rx="14" fill="none" stroke="#F5B82E" stroke-width="6" stroke-dasharray="14 10"/></svg><figcaption>Resistor de 10 kΩ e fio verde até o pino 2</figcaption></figure>
+    </div>
+
+    <div class="bloco passo-guia">
+      <div>
+        <span class="numero">Passo 6</span>
+        <h3>Coloque a luz da tecla</h3>
+        <ol>
+          <li>Encaixe o LED: a <b>perna longa</b> na coluna do botão e a perna curta na coluna ao lado, à direita.</li>
+          <li>Na coluna da perna curta, encaixe um <b>resistor de 220 Ω</b> até o trilho −.</li>
+        </ol>
+        <div class="dica-guia">LED ao contrário não acende. Se não acender, é só virar o LED.</div>
+      </div>
+      <figure class="figura"><svg class="desenho-guia" role="img" aria-label="LED azul com a perna longa na coluna do botão e a curta na coluna ao lado, e resistor de 220 ohms dessa coluna até o trilho menos" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 720"><rect x="8" y="6" width="604" height="708" rx="20" fill="#FBFBF6" stroke="#C9D3DC" stroke-width="3"/><rect x="30" y="20" width="560" height="5" rx="2" fill="#D9473F"/><rect x="30" y="692" width="560" height="5" rx="2" fill="#2F6FD6"/><rect x="24" y="338" width="572" height="44" rx="8" fill="#E2E9EF"/><circle cx="70" cy="48" r="7" fill="#9AA9B7"/><circle cx="70" cy="664" r="7" fill="#9AA9B7"/><circle cx="70" cy="120" r="7" fill="#9AA9B7"/><circle cx="70" cy="168" r="7" fill="#9AA9B7"/><circle cx="70" cy="216" r="7" fill="#9AA9B7"/><circle cx="70" cy="264" r="7" fill="#9AA9B7"/><circle cx="70" cy="312" r="7" fill="#9AA9B7"/><circle cx="70" cy="408" r="7" fill="#9AA9B7"/><circle cx="70" cy="456" r="7" fill="#9AA9B7"/><circle cx="70" cy="504" r="7" fill="#9AA9B7"/><circle cx="70" cy="552" r="7" fill="#9AA9B7"/><circle cx="70" cy="600" r="7" fill="#9AA9B7"/><circle cx="118" cy="48" r="7" fill="#9AA9B7"/><circle cx="118" cy="664" r="7" fill="#9AA9B7"/><circle cx="118" cy="120" r="7" fill="#9AA9B7"/><circle cx="118" cy="168" r="7" fill="#9AA9B7"/><circle cx="118" cy="216" r="7" fill="#9AA9B7"/><circle cx="118" cy="264" r="7" fill="#9AA9B7"/><circle cx="118" cy="312" r="7" fill="#9AA9B7"/><circle cx="118" cy="408" r="7" fill="#9AA9B7"/><circle cx="118" cy="456" r="7" fill="#9AA9B7"/><circle cx="118" cy="504" r="7" fill="#9AA9B7"/><circle cx="118" cy="552" r="7" fill="#9AA9B7"/><circle cx="118" cy="600" r="7" fill="#9AA9B7"/><circle cx="166" cy="48" r="7" fill="#9AA9B7"/><circle cx="166" cy="664" r="7" fill="#9AA9B7"/><circle cx="166" cy="120" r="7" fill="#9AA9B7"/><circle cx="166" cy="168" r="7" fill="#9AA9B7"/><circle cx="166" cy="216" r="7" fill="#9AA9B7"/><circle cx="166" cy="264" r="7" fill="#9AA9B7"/><circle cx="166" cy="312" r="7" fill="#9AA9B7"/><circle cx="166" cy="408" r="7" fill="#9AA9B7"/><circle cx="166" cy="456" r="7" fill="#9AA9B7"/><circle cx="166" cy="504" r="7" fill="#9AA9B7"/><circle cx="166" cy="552" r="7" fill="#9AA9B7"/><circle cx="166" cy="600" r="7" fill="#9AA9B7"/><circle cx="214" cy="48" r="7" fill="#9AA9B7"/><circle cx="214" cy="664" r="7" fill="#9AA9B7"/><circle cx="214" cy="120" r="7" fill="#9AA9B7"/><circle cx="214" cy="168" r="7" fill="#9AA9B7"/><circle cx="214" cy="216" r="7" fill="#9AA9B7"/><circle cx="214" cy="264" r="7" fill="#9AA9B7"/><circle cx="214" cy="312" r="7" fill="#9AA9B7"/><circle cx="214" cy="408" r="7" fill="#9AA9B7"/><circle cx="214" cy="456" r="7" fill="#9AA9B7"/><circle cx="214" cy="504" r="7" fill="#9AA9B7"/><circle cx="214" cy="552" r="7" fill="#9AA9B7"/><circle cx="214" cy="600" r="7" fill="#9AA9B7"/><circle cx="262" cy="48" r="7" fill="#9AA9B7"/><circle cx="262" cy="664" r="7" fill="#9AA9B7"/><circle cx="262" cy="120" r="7" fill="#9AA9B7"/><circle cx="262" cy="168" r="7" fill="#9AA9B7"/><circle cx="262" cy="216" r="7" fill="#9AA9B7"/><circle cx="262" cy="264" r="7" fill="#9AA9B7"/><circle cx="262" cy="312" r="7" fill="#9AA9B7"/><circle cx="262" cy="408" r="7" fill="#9AA9B7"/><circle cx="262" cy="456" r="7" fill="#9AA9B7"/><circle cx="262" cy="504" r="7" fill="#9AA9B7"/><circle cx="262" cy="552" r="7" fill="#9AA9B7"/><circle cx="262" cy="600" r="7" fill="#9AA9B7"/><circle cx="310" cy="48" r="7" fill="#9AA9B7"/><circle cx="310" cy="664" r="7" fill="#9AA9B7"/><circle cx="310" cy="120" r="7" fill="#9AA9B7"/><circle cx="310" cy="168" r="7" fill="#9AA9B7"/><circle cx="310" cy="216" r="7" fill="#9AA9B7"/><circle cx="310" cy="264" r="7" fill="#9AA9B7"/><circle cx="310" cy="312" r="7" fill="#9AA9B7"/><circle cx="310" cy="408" r="7" fill="#9AA9B7"/><circle cx="310" cy="456" r="7" fill="#9AA9B7"/><circle cx="310" cy="504" r="7" fill="#9AA9B7"/><circle cx="310" cy="552" r="7" fill="#9AA9B7"/><circle cx="310" cy="600" r="7" fill="#9AA9B7"/><circle cx="358" cy="48" r="7" fill="#9AA9B7"/><circle cx="358" cy="664" r="7" fill="#9AA9B7"/><circle cx="358" cy="120" r="7" fill="#9AA9B7"/><circle cx="358" cy="168" r="7" fill="#9AA9B7"/><circle cx="358" cy="216" r="7" fill="#9AA9B7"/><circle cx="358" cy="264" r="7" fill="#9AA9B7"/><circle cx="358" cy="312" r="7" fill="#9AA9B7"/><circle cx="358" cy="408" r="7" fill="#9AA9B7"/><circle cx="358" cy="456" r="7" fill="#9AA9B7"/><circle cx="358" cy="504" r="7" fill="#9AA9B7"/><circle cx="358" cy="552" r="7" fill="#9AA9B7"/><circle cx="358" cy="600" r="7" fill="#9AA9B7"/><circle cx="406" cy="48" r="7" fill="#9AA9B7"/><circle cx="406" cy="664" r="7" fill="#9AA9B7"/><circle cx="406" cy="120" r="7" fill="#9AA9B7"/><circle cx="406" cy="168" r="7" fill="#9AA9B7"/><circle cx="406" cy="216" r="7" fill="#9AA9B7"/><circle cx="406" cy="264" r="7" fill="#9AA9B7"/><circle cx="406" cy="312" r="7" fill="#9AA9B7"/><circle cx="406" cy="408" r="7" fill="#9AA9B7"/><circle cx="406" cy="456" r="7" fill="#9AA9B7"/><circle cx="406" cy="504" r="7" fill="#9AA9B7"/><circle cx="406" cy="552" r="7" fill="#9AA9B7"/><circle cx="406" cy="600" r="7" fill="#9AA9B7"/><circle cx="454" cy="48" r="7" fill="#9AA9B7"/><circle cx="454" cy="664" r="7" fill="#9AA9B7"/><circle cx="454" cy="120" r="7" fill="#9AA9B7"/><circle cx="454" cy="168" r="7" fill="#9AA9B7"/><circle cx="454" cy="216" r="7" fill="#9AA9B7"/><circle cx="454" cy="264" r="7" fill="#9AA9B7"/><circle cx="454" cy="312" r="7" fill="#9AA9B7"/><circle cx="454" cy="408" r="7" fill="#9AA9B7"/><circle cx="454" cy="456" r="7" fill="#9AA9B7"/><circle cx="454" cy="504" r="7" fill="#9AA9B7"/><circle cx="454" cy="552" r="7" fill="#9AA9B7"/><circle cx="454" cy="600" r="7" fill="#9AA9B7"/><circle cx="502" cy="48" r="7" fill="#9AA9B7"/><circle cx="502" cy="664" r="7" fill="#9AA9B7"/><circle cx="502" cy="120" r="7" fill="#9AA9B7"/><circle cx="502" cy="168" r="7" fill="#9AA9B7"/><circle cx="502" cy="216" r="7" fill="#9AA9B7"/><circle cx="502" cy="264" r="7" fill="#9AA9B7"/><circle cx="502" cy="312" r="7" fill="#9AA9B7"/><circle cx="502" cy="408" r="7" fill="#9AA9B7"/><circle cx="502" cy="456" r="7" fill="#9AA9B7"/><circle cx="502" cy="504" r="7" fill="#9AA9B7"/><circle cx="502" cy="552" r="7" fill="#9AA9B7"/><circle cx="502" cy="600" r="7" fill="#9AA9B7"/><circle cx="550" cy="48" r="7" fill="#9AA9B7"/><circle cx="550" cy="664" r="7" fill="#9AA9B7"/><circle cx="550" cy="120" r="7" fill="#9AA9B7"/><circle cx="550" cy="168" r="7" fill="#9AA9B7"/><circle cx="550" cy="216" r="7" fill="#9AA9B7"/><circle cx="550" cy="264" r="7" fill="#9AA9B7"/><circle cx="550" cy="312" r="7" fill="#9AA9B7"/><circle cx="550" cy="408" r="7" fill="#9AA9B7"/><circle cx="550" cy="456" r="7" fill="#9AA9B7"/><circle cx="550" cy="504" r="7" fill="#9AA9B7"/><circle cx="550" cy="552" r="7" fill="#9AA9B7"/><circle cx="550" cy="600" r="7" fill="#9AA9B7"/><rect x="190" y="288" width="144" height="144" rx="12" fill="#2E3338"/><circle cx="262" cy="360" r="46" fill="#14181C"/><rect x="206" y="304" width="16" height="16" rx="3" fill="#C7D0D8"/><rect x="302" y="304" width="16" height="16" rx="3" fill="#C7D0D8"/><rect x="206" y="400" width="16" height="16" rx="3" fill="#C7D0D8"/><rect x="302" y="400" width="16" height="16" rx="3" fill="#C7D0D8"/><circle cx="214" cy="312" r="13" fill="none" stroke="#F5B82E" stroke-width="5"/><circle cx="310" cy="408" r="13" fill="none" stroke="#F5B82E" stroke-width="5"/><line x1="214" y1="264" x2="214" y2="48" stroke="#D9473F" stroke-width="12" stroke-linecap="round"/><circle cx="214" cy="264" r="8" fill="#8E2A24"/><circle cx="214" cy="48" r="8" fill="#8E2A24"/><line x1="310" y1="552" x2="310" y2="664" stroke="#8A949E" stroke-width="5" stroke-linecap="round"/><rect x="297" y="576" width="26" height="64" rx="10" fill="#E9CFA4" stroke="#B89A6E" stroke-width="2"/><rect x="297" y="586" width="26" height="8" fill="#6B3E26"/><rect x="297" y="601" width="26" height="8" fill="#1B1B1B"/><rect x="297" y="616" width="26" height="8" fill="#E67E22"/><circle cx="310" cy="552" r="6" fill="#5B6670"/><circle cx="310" cy="664" r="6" fill="#5B6670"/><path d="M310 504 C 250 504, 230 600, 160 600 L 4 600" fill="none" stroke="#2E9E5B" stroke-width="12" stroke-linecap="round"/><circle cx="310" cy="504" r="8" fill="#1D6A3C"/><line x1="358" y1="552" x2="358" y2="664" stroke="#8A949E" stroke-width="5" stroke-linecap="round"/><rect x="345" y="576" width="26" height="64" rx="10" fill="#E9CFA4" stroke="#B89A6E" stroke-width="2"/><rect x="345" y="586" width="26" height="8" fill="#C0392B"/><rect x="345" y="601" width="26" height="8" fill="#C0392B"/><rect x="345" y="616" width="26" height="8" fill="#6B3E26"/><circle cx="358" cy="552" r="6" fill="#5B6670"/><circle cx="358" cy="664" r="6" fill="#5B6670"/><line x1="310" y1="456" x2="358" y2="456" stroke="#8A949E" stroke-width="5"/><circle cx="334" cy="456" r="26" fill="#3B82F6" stroke="#1E4FA8" stroke-width="4"/><circle cx="326" cy="448" r="8" fill="#BFDBFE"/><rect x="298" y="420" width="72" height="72" rx="14" fill="none" stroke="#F5B82E" stroke-width="6" stroke-dasharray="14 10"/><rect x="340" y="540" width="36" height="142" rx="14" fill="none" stroke="#F5B82E" stroke-width="6" stroke-dasharray="14 10"/></svg><figcaption>LED e resistor de 220 Ω</figcaption></figure>
+    </div>
+
+    <div class="bloco passo-guia sem-figura">
+      <div>
+        <span class="numero">Passo 7</span>
+        <h3>Coloque o programa no Arduino (com um adulto)</h3>
+        <ol>
+          <li>Instale a <a href="https://www.arduino.cc/en/software" target="_blank" rel="noopener">Arduino IDE</a> no computador.</li>
+          <li>Baixe o programa do piano: <a href="../Codigo_Piano/Codigo_Piano.ino" download>Codigo_Piano.ino</a>. Ao abrir, a IDE pede para criar uma pasta com o mesmo nome: aceite.</li>
+          <li>Ligue o cabo USB. Em <b>Ferramentas</b>, escolha a placa <b>Arduino Uno</b> e a porta do Arduino.</li>
+          <li>Clique na seta <b>→ Carregar</b> e espere aparecer “Carregado”.</li>
+          <li><b>Feche a Arduino IDE.</b> Enquanto ela estiver aberta, este app não consegue conectar.</li>
+        </ol>
+        <div class="dica-guia">Isso é feito uma vez só por piano. Se o LED ficar piscando sozinho, o programa ainda não foi carregado.</div>
+      </div>
+    </div>
+
+    <div class="bloco passo-guia sem-figura">
+      <div>
+        <span class="numero">Passo 8</span>
+        <h3>Teste a primeira tecla</h3>
+        <ol>
+          <li>Ligue um fio do <b>pino 13</b> do Arduino até a linha azul (−). Ele fica ali até você montar a tecla Si.</li>
+          <li>Ligue o cabo USB e aperte o botão.</li>
+          <li>Clique em <b>🔌 Conectar piano</b> aqui no app, escolha o Arduino e vá para o <b>Modo livre</b>.</li>
+          <li>Aperte o botão de novo.</li>
+        </ol>
+        <div class="dica-guia"><b>Funcionou se:</b> solto, fica tudo em silêncio; apertado, o LED acende, o buzzer toca o Dó e a tecla Dó acende na tela. 🎉</div>
+      </div>
+    </div>
+
+    <div class="bloco">
+      <span class="numero">Passo 9</span>
+      <h3>Agora, as outras 11 teclas</h3>
+      <p>Desligue o cabo USB e repita os passos 3 a 6 para cada tecla, da esquerda para a direita. Só muda o pino do fio verde:</p>
+      <div class="rolagem"><table class="tabela-guia pinos">
+          <tr><th>Tecla</th><td>Dó</td><td>Dó♯</td><td>Ré</td><td>Ré♯</td><td>Mi</td><td>Fá</td><td>Fá♯</td><td>Sol</td><td>Sol♯</td><td>Lá</td><td>Lá♯</td><td>Si</td></tr>
+          <tr><th>Pino</th><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td><td>11</td><td>12</td><td>13</td></tr>
+        </table></div>
+      <div class="dica-guia">Teste cada tecla logo depois de montar. Na tecla Si, tire antes o fio do pino 13 do Passo 8. Não use os pinos 0 e 1: eles são do cabo USB.</div>
+    </div>
+
+    <div class="bloco rolagem">
+      <h3>Deu algum problema?</h3>
+      <table class="tabela-guia">
+        <tr><th>O que aconteceu</th><th>O que fazer</th></tr>
+        <tr><td>Não acende e não toca nada</td><td>Confira as pernas em diagonal do botão e os fios do Passo 1.</td></tr>
+        <tr><td>Toca o som, mas o LED não acende</td><td>O LED está ao contrário: é só virar.</td></tr>
+        <tr><td>Acende a tecla errada na tela</td><td>O fio verde está no pino errado. Confira a tabela do Passo 9.</td></tr>
+        <tr><td>Notas tocam sozinhas</td><td>Falta o resistor de 10 kΩ daquela tecla, ou ele não chega no trilho −.</td></tr>
+        <tr><td>O buzzer apita sem parar</td><td>Falta o fio do pino 13 na linha azul (Passo 8), ou a perna − do buzzer não está no GND.</td></tr>
+        <tr><td>Metade das teclas não funciona ou toca sozinha</td><td>Os trilhos da protoboard são divididos no meio: ligue os dois lados de cada linha com um fio.</td></tr>
+        <tr><td>O LED pisca sozinho</td><td>O programa ainda não foi carregado (Passo 7).</td></tr>
+        <tr><td>O app não conecta</td><td>Feche a Arduino IDE e use o Chrome ou o Edge.</td></tr>
+      </table>
+    </div>
+
+    <div class="proximo"><button class="botao principal" id="ir-tocar">Piano pronto? Ir para o Modo livre →</button></div>
   </section>
 
 </main>
@@ -328,6 +598,8 @@ const $ = (id) => document.getElementById(id);
 
 const telaPiano = $("tela-piano");
 const telaBiblioteca = $("tela-biblioteca");
+const telaPecas = $("tela-pecas");
+const telaMontagem = $("tela-montagem");
 const painelAprendizado = $("painel-aprendizado");
 const painelMemoria = $("painel-memoria");
 const teclado = $("teclado");
@@ -341,7 +613,9 @@ const botaoNovoJogo = $("botao-novo-jogo");
 const itensMenu = {
   livre: $("menu-livre"),
   melodia: $("menu-melodia"),
-  memoria: $("menu-memoria")
+  memoria: $("menu-memoria"),
+  pecas: $("menu-pecas"),
+  montagem: $("menu-montagem")
 };
 
 // =====================================
@@ -434,9 +708,24 @@ function selecionarMenu(nome) {
   }
 }
 
+// Mostra uma tela e esconde as outras
+function mostrarSoTela(tela) {
+  for (const t of [telaPiano, telaBiblioteca, telaPecas, telaMontagem]) {
+    t.hidden = (t !== tela);
+  }
+  window.scrollTo(0, 0);
+}
+
 function mostrarTelaPiano() {
-  telaBiblioteca.hidden = true;
-  telaPiano.hidden = false;
+  mostrarSoTela(telaPiano);
+}
+
+// Lista de peças e guia de montagem
+function mostrarLeitura(nome) {
+  modoAprendizado = false;
+  sairMemoria();
+  mostrarSoTela(nome === "pecas" ? telaPecas : telaMontagem);
+  selecionarMenu(nome);
 }
 
 function mostrarModoLivre() {
@@ -450,8 +739,7 @@ function mostrarModoLivre() {
 function mostrarBiblioteca() {
   modoAprendizado = false;
   sairMemoria();
-  telaPiano.hidden = true;
-  telaBiblioteca.hidden = false;
+  mostrarSoTela(telaBiblioteca);
   selecionarMenu("melodia");
 }
 
@@ -836,6 +1124,10 @@ window.piano = { simularArduino: receberDoArduino };
 itensMenu.livre.addEventListener("click", mostrarModoLivre);
 itensMenu.melodia.addEventListener("click", mostrarBiblioteca);
 itensMenu.memoria.addEventListener("click", abrirMemoria);
+itensMenu.pecas.addEventListener("click", () => mostrarLeitura("pecas"));
+itensMenu.montagem.addEventListener("click", () => mostrarLeitura("montagem"));
+$("ir-montagem").addEventListener("click", () => mostrarLeitura("montagem"));
+$("ir-tocar").addEventListener("click", mostrarModoLivre);
 
 $("botao-recomecar").addEventListener("click", () => iniciarMusica(musicaAtual));
 $("botao-voltar").addEventListener("click", mostrarBiblioteca);
