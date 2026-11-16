@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Piano Interativo</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎹</text></svg>">
+<style>
+  /* =====================================
+     CORES (as mesmas da versão em Python)
+     ===================================== */
+  :root {
+    --fundo: #EAF3F8;
+    --menu: #263B50;
+    --menu-ativo: #3D5D82;
+    --menu-texto2: #AFC3D8;
+    --titulo: #263B50;
+    --texto2: #52677D;
+    --azul: #1675C5;
+    --azul-escuro: #0B4F8A;
+    --destaque: #38BDF8;
+    --verde: #16834A;
+    --verde-claro: #BBF7D0;
+    --verde-texto: #166534;
+    --laranja: #D97706;
+    --laranja-escuro: #92400E;
+    --borda: #CBD5E1;
+    --cinza: #F1F5F9;
+    --botao: #DCEBFA;
+    --link: #2583D8;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; }
+
+  body {
+    background: var(--fundo);
+    color: var(--titulo);
+    font-family: Arial, Helvetica, sans-serif;
+    display: flex;
+    min-height: 100vh;
+  }
+
+  button { font-family: inherit; cursor: pointer; }
+  [hidden] { display: none !important; }
+
+  /* ========== MENU LATERAL ========== */
+  .menu {
+    width: 250px;
+    flex: none;
+    background: var(--menu);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 20px;
+  }
+  .menu h1 { font-size: 26px; line-height: 1.2; margin: 30px 20px 45px; }
+  .menu .rotulo {
+    font-size: 12px; font-weight: bold; letter-spacing: .05em;
+    color: var(--menu-texto2); margin: 0 20px 15px;
+  }
+  .itens { display: flex; flex-direction: column; }
+  .item {
+    background: transparent; color: #fff; border: 0; border-radius: 6px;
+    text-align: left; font-size: 16px; font-weight: bold;
+    padding: 15px; margin: 5px 12px;
+  }
+  .item:hover { background: #30475f; }
+  .item.ativo { background: var(--menu-ativo); }
+  .item:focus-visible, .botao:focus-visible, .cartao:focus-visible { outline: 3px solid var(--destaque); outline-offset: 2px; }
+
+  /* Conexão com o piano físico */
+  .conexao {
+    margin: auto 12px 0; padding: 14px; border-radius: 8px;
+    background: #1d2f41; font-size: 14px;
+  }
+  .status { display: flex; align-items: center; gap: 8px; font-weight: bold; }
+  .bolinha-status { width: 12px; height: 12px; border-radius: 50%; background: #94A3B8; flex: none; }
+  .conectado .bolinha-status { background: #4ADE80; }
+  .conexao p { margin: 8px 0 0; color: var(--menu-texto2); font-size: 13px; line-height: 1.35; }
+  .conexao .botao { width: 100%; margin-top: 10px; }
+
+  /* ========== ÁREA PRINCIPAL ========== */
+  main { flex: 1; min-width: 0; padding: 0 16px 30px; }
+  .tela { display: flex; flex-direction: column; align-items: center; }
+  h2 { font-size: 32px; margin: 25px 0 15px; text-align: center; }
+  .subtitulo { color: var(--texto2); font-size: 16px; margin: 0 0 20px; }
+
+  .botao {
+    border: 1px solid var(--borda); border-radius: 6px;
+    background: #fff; color: var(--titulo);
+    font-size: 14px; padding: 8px 14px;
+  }
+  .botao.principal { background: var(--botao); font-weight: bold; }
+  .botao:hover { filter: brightness(.96); }
+
+  .linha-botoes { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 8px; }
+
+  /* ========== TECLADO ========== */
+  .moldura {
+    width: min(810px, 100%);
+    background: var(--menu);
+    padding: 20px;
+    margin-top: 20px;
+    border-radius: 4px;
+  }
+  .teclado {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 770 / 280;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .tecla {
+    position: absolute; top: 0;
+    border: 2px solid #000;
+    display: flex; flex-direction: column; justify-content: flex-end; align-items: center;
+    font-weight: bold; cursor: pointer;
+    transition: background-color .08s;
+  }
+  .tecla.branca {
+    height: 100%; width: calc(100% / 7);
+    background: #fff; color: #000;
+    padding-bottom: 18%; font-size: clamp(11px, 2vw, 16px);
+    z-index: 1;
+  }
+  .tecla.preta {
+    height: 62.5%; width: calc(100% * 65 / 770);
+    background: #000; color: #fff;
+    padding-bottom: 14%; font-size: clamp(9px, 1.4vw, 12px);
+    z-index: 2;
+  }
+  .tecla.acesa { background: var(--destaque); }
+  .tecla.apertada { outline: 4px solid var(--destaque); outline-offset: 1px; z-index: 3; }
+
+  /* ========== FAIXA DE NOTAS (aprender melodia) ========== */
+  .painel { display: flex; flex-direction: column; align-items: center; width: 100%; }
+  .faixa {
+    position: relative; overflow: hidden;
+    width: min(700px, 100%); height: 80px;
+    background: #fff; border: 1px solid var(--borda);
+    margin-bottom: 8px;
+  }
+  .faixa .marcador {
+    position: absolute; left: 50%; top: 4px; transform: translateX(-50%);
+    width: 0; height: 0;
+    border-left: 7px solid transparent; border-right: 7px solid transparent;
+    border-top: 9px solid var(--azul);
+  }
+  .nota {
+    position: absolute; left: 50%; top: calc(50% + 4px);
+    width: 50px; height: 50px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: bold; font-size: 15px;
+    border: 2px solid var(--borda); background: var(--cinza); color: var(--texto2);
+    transition: transform .3s ease, background-color .2s, color .2s, border-color .2s;
+  }
+  .nota.tocada { background: var(--verde-claro); color: var(--verde-texto); border-color: var(--verde); }
+  .nota.atual { background: var(--azul); color: #fff; border-color: var(--azul-escuro); }
+  .nota.atual.erro { background: var(--laranja); border-color: var(--laranja-escuro); }
+
+  .instrucao { font-size: 24px; font-weight: bold; color: var(--azul); margin: 5px 0 3px; text-align: center; }
+  .instrucao.ok { color: var(--verde); }
+  .instrucao.erro { color: var(--laranja); }
+  .progresso { color: var(--texto2); font-size: 15px; text-align: center; }
+
+  /* ========== BIBLIOTECA ========== */
+  .grade {
+    display: grid; grid-template-columns: repeat(3, 190px); gap: 20px;
+  }
+  .cartao {
+    background: #fff; border: 1px solid var(--borda); border-radius: 4px;
+    height: 140px; padding: 10px;
+    display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+    text-align: center; font: inherit; color: var(--titulo);
+  }
+  .cartao[disabled] { cursor: default; }
+  .cartao:not([disabled]):hover { border-color: var(--link); box-shadow: 0 2px 8px rgba(38,59,80,.12); }
+  .cartao .icone { font-size: 32px; margin-bottom: 4px; }
+  .cartao .nome { font-weight: bold; font-size: 15px; white-space: pre-line; }
+  .cartao .nivel { color: var(--link); font-size: 12px; margin-top: 5px; }
+
+  /* ========== TELAS PEQUENAS ========== */
+  @media (max-width: 760px) {
+    body { flex-direction: column; }
+    .menu { width: auto; padding-bottom: 12px; }
+    .menu h1 { margin: 16px; font-size: 20px; }
+    .menu h1 br { display: none; }
+    .menu .rotulo { display: none; }
+    .itens { flex-direction: row; overflow-x: auto; padding: 0 6px; }
+    .item { white-space: nowrap; margin: 0 4px; padding: 10px 12px; font-size: 14px; }
+    .conexao { margin: 12px 12px 0; }
+    .grade { grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; }
+    h2 { font-size: 24px; }
+    .moldura { padding: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- =====================================
+     MENU LATERAL
+     ===================================== -->
+<nav class="menu">
+  <h1>PIANO 🎹<br>INTERATIVO</h1>
+  <div class="rotulo">ATIVIDADES</div>
+  <div class="itens">
+    <button class="item" id="menu-livre">♫&nbsp;&nbsp; Modo livre</button>
+    <button class="item" id="menu-melodia">📖&nbsp;&nbsp; Aprenda uma melodia</button>
+    <button class="item" id="menu-memoria">🧠&nbsp;&nbsp; Jogo da memória</button>
+  </div>
+
+  <div class="conexao" id="conexao">
+    <div class="status"><span class="bolinha-status"></span><span id="status-texto">Piano desconectado</span></div>
+    <p id="status-dica">Ligue o piano no cabo USB e clique no botão abaixo.</p>
+    <button class="botao principal" id="botao-conectar">🔌 Conectar piano</button>
+  </div>
+</nav>
+
+<!-- =====================================
+     ÁREA PRINCIPAL
+     ===================================== -->
+<main>
+
+  <!-- Tela do piano (modo livre, aprender melodia e jogo da memória) -->
+  <section class="tela" id="tela-piano">
+    <h2>Meu Teclado Musical</h2>
+
+    <!-- Painel de aprendizagem -->
+    <div class="painel" id="painel-aprendizado" hidden>
+      <div class="faixa" id="faixa"><div class="marcador"></div></div>
+      <div class="instrucao" id="instrucao-nota">Encontre a nota: Dó</div>
+      <div class="progresso" id="progresso-nota">Nota 1 de 14</div>
+      <div class="linha-botoes">
+        <button class="botao principal" id="botao-recomecar">↻ Recomeçar música</button>
+        <button class="botao" id="botao-voltar">Voltar às músicas</button>
+      </div>
+    </div>
+
+    <!-- Painel do jogo da memória -->
+    <div class="painel" id="painel-memoria" hidden>
+      <div class="instrucao" id="instrucao-memoria">Prepare-se...</div>
+      <div class="progresso" id="placar-memoria">Recorde: 0</div>
+      <div class="linha-botoes">
+        <button class="botao principal" id="botao-novo-jogo">▶ Iniciar</button>
+        <button class="botao" id="botao-sair-memoria">Sair do jogo</button>
+      </div>
+    </div>
+
+    <div class="moldura">
+      <div class="teclado" id="teclado"></div>
+    </div>
+  </section>
+
+  <!-- Biblioteca de músicas -->
+  <section class="tela" id="tela-biblioteca" hidden>
+    <h2>Aprenda uma melodia</h2>
+    <p class="subtitulo">Escolha uma música para aprender!</p>
+    <div class="grade" id="grade-musicas"></div>
+  </section>
+
+</main>
+
+<script>
+// =====================================
+// NOTAS E MÚSICAS
+// =====================================
+
+const NOTAS_BRANCAS = ["Dó", "Ré", "Mi", "Fá", "Sol", "Lá", "Si"];
+
+// [nota, posição da tecla branca à esquerda]
+const NOTAS_PRETAS = [
+  ["Dó♯", 0], ["Ré♯", 1], ["Fá♯", 3], ["Sol♯", 4], ["Lá♯", 5]
+];
+
+// Número que o Arduino envia (1 a 12) -> nota
+const NOTAS_ARDUINO = [
+  "Dó", "Dó♯", "Ré", "Ré♯", "Mi", "Fá",
+  "Fá♯", "Sol", "Sol♯", "Lá", "Lá♯", "Si"
+];
+
+// Músicas do modo "Aprenda uma melodia".
+// O teclado tem uma oitava só, então um Sol agudo e um Sol grave usam a mesma tecla.
+// Para adicionar outra música: inclua uma entrada aqui e coloque a chave no cartão em CARTOES.
+const MUSICAS = {
+  brilha: {
+    nome: "Brilha, Brilha Estrelinha",
+    notas: [
+      "Dó", "Dó", "Sol", "Sol",
+      "Lá", "Lá", "Sol",
+      "Fá", "Fá", "Mi", "Mi",
+      "Ré", "Ré", "Dó"
+    ]
+  },
+  parabens: {
+    nome: "Parabéns pra Você",
+    notas: [
+      "Sol", "Sol", "Lá", "Sol", "Dó", "Si",
+      "Sol", "Sol", "Lá", "Sol", "Ré", "Dó",
+      "Sol", "Sol", "Sol", "Mi", "Dó", "Si", "Lá",
+      "Fá", "Fá", "Mi", "Dó", "Ré", "Dó"
+    ]
+  }
+};
+
+// Cartões da biblioteca. "chave" liga o cartão a uma música de MUSICAS.
+const CARTOES = [
+  { simbolo: "⭐", nome: "Brilha, Brilha\nEstrelinha", nivel: "Iniciante", chave: "brilha" },
+  { simbolo: "🎂", nome: "Parabéns pra Você", nivel: "Intermediário", chave: "parabens" },
+  { simbolo: "🎨", nome: "Aquarela", nivel: "Em breve", chave: null },
+  { simbolo: "🎵", nome: "Nova música", nivel: "Em breve", chave: null },
+  { simbolo: "🎼", nome: "Nova música", nivel: "Em breve", chave: null },
+  { simbolo: "🎹", nome: "Nova música", nivel: "Em breve", chave: null }
+];
+
+// Teclas do computador, úteis para testar sem o piano físico
+const TECLAS_COMPUTADOR = {
+  a: "Dó", w: "Dó♯", s: "Ré", e: "Ré♯", d: "Mi", f: "Fá",
+  t: "Fá♯", g: "Sol", y: "Sol♯", h: "Lá", u: "Lá♯", j: "Si"
+};
+
+// =====================================
+// ELEMENTOS DA PÁGINA
+// =====================================
+
+const $ = (id) => document.getElementById(id);
+
+const telaPiano = $("tela-piano");
+const telaBiblioteca = $("tela-biblioteca");
+const painelAprendizado = $("painel-aprendizado");
+const painelMemoria = $("painel-memoria");
+const teclado = $("teclado");
+const faixa = $("faixa");
+const instrucaoNota = $("instrucao-nota");
+const progressoNota = $("progresso-nota");
+const instrucaoMemoria = $("instrucao-memoria");
+const placarMemoria = $("placar-memoria");
+const botaoNovoJogo = $("botao-novo-jogo");
+
+const itensMenu = {
+  livre: $("menu-livre"),
+  melodia: $("menu-melodia"),
+  memoria: $("menu-memoria")
+};
+
+// =====================================
+// ESTADO
+// =====================================
+
+let musicaAtual = "brilha";
+let indiceNota = 0;
+let modoAprendizado = false;
+
+let modoMemoria = false;          // o jogo está ativo na tela
+let sequenciaMemoria = [];        // notas que o jogo escolheu
+let indiceMemoria = 0;            // quantas notas o jogador já acertou na rodada
+let mostrandoSequencia = false;   // o jogo está mostrando a sequência
+let jogandoMemoria = false;       // é a vez do jogador
+let recordeMemoria = lerRecorde();
+let geracaoMemoria = 0;           // serve para cancelar animações antigas
+
+function lerRecorde() {
+  try { return Number(localStorage.getItem("piano-recorde")) || 0; }
+  catch { return 0; }
+}
+function salvarRecorde() {
+  try { localStorage.setItem("piano-recorde", String(recordeMemoria)); } catch {}
+}
+
+// =====================================
+// DESENHAR O TECLADO
+// =====================================
+
+const teclasPorNota = {};
+
+NOTAS_BRANCAS.forEach((nota, i) => {
+  const tecla = criarTecla(nota, "branca");
+  tecla.style.left = `calc(100% * ${i} / 7)`;
+});
+
+NOTAS_PRETAS.forEach(([nota, posicao]) => {
+  const tecla = criarTecla(nota, "preta");
+  // centro da tecla preta fica na divisa entre duas brancas
+  tecla.style.left = `calc(100% * ${(posicao + 1) * 110 - 32.5} / 770)`;
+});
+
+function criarTecla(nota, tipo) {
+  const tecla = document.createElement("div");
+  tecla.className = `tecla ${tipo}`;
+  tecla.textContent = nota;
+  tecla.dataset.nota = nota;
+
+  tecla.addEventListener("pointerdown", (evento) => {
+    evento.preventDefault();
+    tecla.classList.add("apertada");
+    registrarNota(nota);
+  });
+
+  const soltar = () => tecla.classList.remove("apertada");
+  tecla.addEventListener("pointerup", soltar);
+  tecla.addEventListener("pointerleave", soltar);
+  tecla.addEventListener("pointercancel", soltar);
+
+  teclado.appendChild(tecla);
+  teclasPorNota[nota] = tecla;
+  return tecla;
+}
+
+function restaurarTeclas() {
+  for (const nota in teclasPorNota) {
+    teclasPorNota[nota].classList.remove("acesa");
+  }
+}
+
+// Acende uma tecla (quando o botão do piano físico é apertado)
+let temporizadorTecla = null;
+function acenderTecla(nota, duracao = 400) {
+  restaurarTeclas();
+  teclasPorNota[nota].classList.add("acesa");
+  clearTimeout(temporizadorTecla);
+  temporizadorTecla = setTimeout(() => {
+    if (!mostrandoSequencia) restaurarTeclas();
+  }, duracao);
+}
+
+// =====================================
+// CONTROLE DO MENU E DAS TELAS
+// =====================================
+
+function selecionarMenu(nome) {
+  for (const chave in itensMenu) {
+    itensMenu[chave].classList.toggle("ativo", chave === nome);
+  }
+}
+
+function mostrarTelaPiano() {
+  telaBiblioteca.hidden = true;
+  telaPiano.hidden = false;
+}
+
+function mostrarModoLivre() {
+  modoAprendizado = false;
+  sairMemoria();
+  painelAprendizado.hidden = true;
+  mostrarTelaPiano();
+  selecionarMenu("livre");
+}
+
+function mostrarBiblioteca() {
+  modoAprendizado = false;
+  sairMemoria();
+  telaPiano.hidden = true;
+  telaBiblioteca.hidden = false;
+  selecionarMenu("melodia");
+}
+
+// Cartões da biblioteca
+const grade = $("grade-musicas");
+for (const cartao of CARTOES) {
+  const botao = document.createElement("button");
+  botao.className = "cartao";
+  botao.innerHTML = `
+    <span class="icone">${cartao.simbolo}</span>
+    <span class="nome"></span>
+    <span class="nivel"></span>`;
+  botao.querySelector(".nome").textContent = cartao.nome;
+  botao.querySelector(".nivel").textContent = cartao.nivel;
+
+  if (cartao.chave && MUSICAS[cartao.chave]) {
+    botao.addEventListener("click", () => iniciarMusica(cartao.chave));
+  } else {
+    botao.disabled = true;
+  }
+  grade.appendChild(botao);
+}
+
+// =====================================
+// APRENDER UMA MELODIA
+// =====================================
+
+const PASSO_NOTA = 62; // distância entre o centro de duas notas na faixa
+let bolinhasFaixa = [];
+
+function iniciarMusica(chave) {
+  sairMemoria();
+
+  musicaAtual = chave;
+  indiceNota = 0;
+  modoAprendizado = true;
+
+  // Recria as bolinhas da faixa para esta música
+  bolinhasFaixa.forEach((b) => b.remove());
+  bolinhasFaixa = MUSICAS[chave].notas.map((nota) => {
+    const bolinha = document.createElement("div");
+    bolinha.className = "nota";
+    bolinha.textContent = nota;
+    faixa.appendChild(bolinha);
+    return bolinha;
+  });
+
+  mostrarTelaPiano();
+  selecionarMenu("melodia");
+  painelAprendizado.hidden = false;
+
+  const notas = MUSICAS[chave].notas;
+  definirInstrucao(instrucaoNota, `Encontre a nota: ${notas[0]}`);
+  progressoNota.textContent = `Nota 1 de ${notas.length}`;
+
+  desenharFaixa();
+}
+
+// A nota atual fica sempre no centro e as outras andam ao redor dela.
+function desenharFaixa(erro = false) {
+  bolinhasFaixa.forEach((bolinha, i) => {
+    const deslocamento = (i - indiceNota) * PASSO_NOTA;
+    bolinha.style.transform = `translate(calc(-50% + ${deslocamento}px), -50%)`;
+    bolinha.classList.toggle("tocada", i < indiceNota);
+    bolinha.classList.toggle("atual", i === indiceNota);
+    bolinha.classList.toggle("erro", i === indiceNota && erro);
+  });
+}
+
+function definirInstrucao(elemento, texto, tipo = "") {
+  elemento.textContent = texto;
+  elemento.className = "instrucao" + (tipo ? " " + tipo : "");
+}
+
+// Recebe uma nota tocada (no piano físico, na tela ou no teclado do computador)
+function registrarNota(nota) {
+  // Jogo da memória tem prioridade
+  if (modoMemoria) {
+    verificarMemoria(nota);
+    return;
+  }
+
+  if (!modoAprendizado) return;
+
+  const notas = MUSICAS[musicaAtual].notas;
+  if (indiceNota >= notas.length) return;
+
+  const notaCorreta = notas[indiceNota];
+
+  if (nota === notaCorreta) {
+    indiceNota++;
+    desenharFaixa();
+
+    if (indiceNota < notas.length) {
+      definirInstrucao(instrucaoNota, `Próxima nota: ${notas[indiceNota]}`);
+      progressoNota.textContent = `Nota ${indiceNota + 1} de ${notas.length}`;
+    } else {
+      definirInstrucao(instrucaoNota, "Parabéns! Você terminou! ⭐", "ok");
+      progressoNota.textContent = `${MUSICAS[musicaAtual].nome} concluída!`;
+    }
+  } else {
+    definirInstrucao(instrucaoNota, `Tente novamente: ${notaCorreta}`, "erro");
+    desenharFaixa(true);
+  }
+}
+
+// =====================================
+// JOGO DA MEMÓRIA
+// =====================================
+
+function sortearNota() {
+  return NOTAS_BRANCAS[Math.floor(Math.random() * NOTAS_BRANCAS.length)];
+}
+
+function atualizarPlacar() {
+  placarMemoria.textContent = `Rodada ${sequenciaMemoria.length}  |  Recorde: ${recordeMemoria}`;
+}
+
+function prepararTelaMemoria() {
+  modoAprendizado = false;
+  modoMemoria = true;
+  geracaoMemoria++; // invalida qualquer animação que ainda esteja agendada
+  indiceMemoria = 0;
+  mostrandoSequencia = false;
+  jogandoMemoria = false;
+  restaurarTeclas();
+
+  painelAprendizado.hidden = true;
+  mostrarTelaPiano();
+  selecionarMenu("memoria");
+  painelMemoria.hidden = false;
+}
+
+// Mostra a tela do jogo, mas só começa quando o botão "Iniciar" for clicado
+function abrirMemoria() {
+  prepararTelaMemoria();
+  sequenciaMemoria = [];
+  definirInstrucao(instrucaoMemoria, "Pressione Iniciar para começar");
+  placarMemoria.textContent = `Recorde: ${recordeMemoria}`;
+  botaoNovoJogo.textContent = "▶ Iniciar";
+}
+
+function iniciarMemoria() {
+  prepararTelaMemoria();
+  sequenciaMemoria = [sortearNota()];
+  definirInstrucao(instrucaoMemoria, "Prepare-se...");
+  botaoNovoJogo.textContent = "↻ Reiniciar";
+  atualizarPlacar();
+
+  const g = geracaoMemoria;
+  setTimeout(() => mostrarSequencia(g), 800);
+}
+
+function sairMemoria() {
+  modoMemoria = false;
+  mostrandoSequencia = false;
+  jogandoMemoria = false;
+  geracaoMemoria++;
+  restaurarTeclas();
+  painelMemoria.hidden = true;
+}
+
+function mostrarSequencia(geracao) {
+  if (geracao !== geracaoMemoria) return;
+  mostrandoSequencia = true;
+  jogandoMemoria = false;
+  definirInstrucao(instrucaoMemoria, "Observe a sequência...");
+  tocarPasso(0, geracao);
+}
+
+function tocarPasso(i, geracao) {
+  if (geracao !== geracaoMemoria) return;
+
+  // Terminou de mostrar: agora é a vez do jogador
+  if (i >= sequenciaMemoria.length) {
+    mostrandoSequencia = false;
+    jogandoMemoria = true;
+    indiceMemoria = 0;
+    definirInstrucao(instrucaoMemoria, "Sua vez! Repita a sequência");
+    return;
+  }
+
+  const nota = sequenciaMemoria[i];
+  const tecla = teclasPorNota[nota];
+  tecla.classList.add("acesa");
+
+  // Avisa o Arduino qual nota está sendo mostrada (ele pode tocar no alto-falante)
+  enviarNotaParaArduino(nota);
+
+  setTimeout(() => {
+    tecla.classList.remove("acesa");
+    if (geracao !== geracaoMemoria) return;
+    setTimeout(() => tocarPasso(i + 1, geracao), 250); // pausa antes da próxima nota
+  }, 500);
+}
+
+function verificarMemoria(nota) {
+  // Ignora notas enquanto o jogo mostra a sequência ou depois do fim de jogo
+  if (!jogandoMemoria) return;
+
+  const notaCorreta = sequenciaMemoria[indiceMemoria];
+
+  if (nota === notaCorreta) {
+    indiceMemoria++;
+    placarMemoria.textContent =
+      `Rodada ${sequenciaMemoria.length}  |  ` +
+      `Acertos: ${indiceMemoria} de ${sequenciaMemoria.length}  |  ` +
+      `Recorde: ${recordeMemoria}`;
+
+    // Completou a sequência da rodada
+    if (indiceMemoria === sequenciaMemoria.length) {
+      jogandoMemoria = false;
+      recordeMemoria = Math.max(recordeMemoria, sequenciaMemoria.length);
+      salvarRecorde();
+      sequenciaMemoria.push(sortearNota());
+      definirInstrucao(instrucaoMemoria, "Muito bem! ✅", "ok");
+      atualizarPlacar();
+
+      const g = geracaoMemoria;
+      setTimeout(() => mostrarSequencia(g), 1000);
+    }
+  } else {
+    jogandoMemoria = false;
+    const rodadasCompletas = sequenciaMemoria.length - 1; // a rodada atual não foi concluída
+    recordeMemoria = Math.max(recordeMemoria, rodadasCompletas);
+    salvarRecorde();
+    definirInstrucao(instrucaoMemoria, `Errou! Era ${notaCorreta}. Fim de jogo`, "erro");
+    placarMemoria.textContent =
+      `Você completou ${rodadasCompletas} rodada(s)  |  Recorde: ${recordeMemoria}`;
+  }
+}
+
+// =====================================
+// COMUNICAÇÃO COM O ARDUINO (Web Serial)
+// Funciona no Google Chrome e no Microsoft Edge, no computador.
+// O Arduino envia uma linha com um número de 1 a 12 (9600 baud).
+// =====================================
+
+const conexao = $("conexao");
+const statusTexto = $("status-texto");
+const statusDica = $("status-dica");
+const botaoConectar = $("botao-conectar");
+
+let porta = null;
+let leitor = null;
+
+function mostrarStatus(estado, dica) {
+  const conectado = estado === "conectado";
+  conexao.classList.toggle("conectado", conectado);
+  statusTexto.textContent = conectado ? "Piano conectado ✓" : "Piano desconectado";
+  botaoConectar.hidden = conectado;
+  statusDica.textContent = dica ?? (conectado
+    ? "Pode tocar nos botões do piano!"
+    : "Ligue o piano no cabo USB e clique no botão abaixo.");
+}
+
+async function abrirPorta(novaPorta) {
+  if (porta) return;
+  try {
+    await novaPorta.open({ baudRate: 9600 });
+  } catch (erro) {
+    console.warn("Não foi possível abrir a porta:", erro);
+    mostrarStatus("desconectado",
+      "Não foi possível abrir o piano. Feche a IDE do Arduino (ou outro programa usando o cabo) e tente de novo.");
+    return;
+  }
+  porta = novaPorta;
+  mostrarStatus("conectado");
+  lerArduino();
+}
+
+async function lerArduino() {
+  const decodificador = new TextDecoder();
+  let resto = "";
+
+  while (porta && porta.readable) {
+    leitor = porta.readable.getReader();
+    try {
+      while (true) {
+        const { value, done } = await leitor.read();
+        if (done) break;
+        resto += decodificador.decode(value, { stream: true });
+        const linhas = resto.split("\n");
+        resto = linhas.pop(); // pedaço sem "\n" ainda: espera o resto chegar
+        linhas.forEach(receberDoArduino);
+      }
+    } catch (erro) {
+      console.warn("Arduino desconectado:", erro);
+      break;
+    } finally {
+      leitor.releaseLock();
+      leitor = null;
+    }
+  }
+
+  // Cabo removido: fecha e volta a esperar
+  if (porta) {
+    try { await porta.close(); } catch {}
+  }
+  porta = null;
+  mostrarStatus("desconectado");
+}
+
+function receberDoArduino(linha) {
+  const mensagem = linha.trim();
+  console.log("Recebido do Arduino:", mensagem);
+
+  // Durante a exibição da sequência, ignora o Arduino para não apagar o destaque das teclas
+  if (!/^\d+$/.test(mensagem) || mostrandoSequencia) return;
+
+  const numero = Number(mensagem);
+  if (numero < 1 || numero > 12) return;
+
+  const nota = NOTAS_ARDUINO[numero - 1];
+  acenderTecla(nota);
+  registrarNota(nota);
+}
+
+// Envia o número da nota (1 a 12) para o Arduino, seguido de "\n".
+// Se o código do Arduino não ler a porta serial, isso é simplesmente ignorado.
+async function enviarNotaParaArduino(nota) {
+  if (!porta || !porta.writable || porta.writable.locked) return;
+  const escritor = porta.writable.getWriter();
+  try {
+    await escritor.write(new TextEncoder().encode(`${NOTAS_ARDUINO.indexOf(nota) + 1}\n`));
+  } catch (erro) {
+    console.warn("Não foi possível enviar para o Arduino:", erro);
+  } finally {
+    escritor.releaseLock();
+  }
+}
+
+if ("serial" in navigator) {
+  botaoConectar.addEventListener("click", async () => {
+    try {
+      const escolhida = await navigator.serial.requestPort();
+      await abrirPorta(escolhida);
+    } catch (erro) {
+      // A pessoa fechou a janela sem escolher: não faz nada
+      if (erro.name !== "NotFoundError") console.warn(erro);
+    }
+  });
+
+  // Se o piano já foi autorizado antes, conecta sozinho
+  navigator.serial.getPorts().then((portas) => {
+    if (portas.length) abrirPorta(portas[0]);
+  });
+
+  // Reconecta sozinho quando o cabo é ligado de novo
+  navigator.serial.addEventListener("connect", (evento) => abrirPorta(evento.target));
+  navigator.serial.addEventListener("disconnect", (evento) => {
+    if (evento.target === porta && leitor) leitor.cancel().catch(() => {});
+  });
+
+  mostrarStatus("desconectado");
+} else {
+  botaoConectar.hidden = true;
+  statusDica.textContent =
+    "Para conectar o piano, abra esta página no Google Chrome ou no Microsoft Edge, no computador.";
+}
+
+// =====================================
+// TECLADO DO COMPUTADOR (para testar sem o piano)
+// =====================================
+
+document.addEventListener("keydown", (evento) => {
+  if (evento.repeat || evento.ctrlKey || evento.metaKey || evento.altKey) return;
+  const nota = TECLAS_COMPUTADOR[evento.key.toLowerCase()];
+  if (!nota) return;
+  if (mostrandoSequencia) return;
+  acenderTecla(nota, 250);
+  registrarNota(nota);
+});
+
+// Para testar pelo console do navegador: piano.simularArduino("5")
+window.piano = { simularArduino: receberDoArduino };
+
+// =====================================
+// EVENTOS DO MENU E BOTÕES
+// =====================================
+
+itensMenu.livre.addEventListener("click", mostrarModoLivre);
+itensMenu.melodia.addEventListener("click", mostrarBiblioteca);
+itensMenu.memoria.addEventListener("click", abrirMemoria);
+
+$("botao-recomecar").addEventListener("click", () => iniciarMusica(musicaAtual));
+$("botao-voltar").addEventListener("click", mostrarBiblioteca);
+botaoNovoJogo.addEventListener("click", iniciarMemoria);
+$("botao-sair-memoria").addEventListener("click", mostrarModoLivre);
+
+// =====================================
+// INICIALIZAÇÃO
+// =====================================
+
+mostrarModoLivre();
+</script>
+</body>
+</html>
