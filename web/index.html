@@ -638,14 +638,15 @@ const MUSICAS = {
       "Mi", "Ré", "Ré", "Mi", "Ré", "Dó"
     ]
   },
+  // O "dim dom dão" (Dó, Sol grave, Dó) precisa de um Sol abaixo do Dó, que o teclado não tem.
+  // Por isso a música termina no fim da terceira parte.
   jaco: {
     nome: "Irmão Jacó",
     notas: [
       "Dó", "Ré", "Mi", "Dó", "Dó", "Ré", "Mi", "Dó",
       "Mi", "Fá", "Sol", "Mi", "Fá", "Sol",
       "Sol", "Lá", "Sol", "Fá", "Mi", "Dó",
-      "Sol", "Lá", "Sol", "Fá", "Mi", "Dó",
-      "Dó", "Sol", "Dó", "Dó", "Sol", "Dó"
+      "Sol", "Lá", "Sol", "Fá", "Mi", "Dó"
     ]
   },
   sino: {
@@ -667,26 +668,26 @@ const MUSICAS = {
     ]
   },
   // Músicas difíceis: usam as teclas pretas (♯)
+  // Trecho mais famoso, em Dó menor para caber nas 12 teclas sem inverter a melodia.
   elisa: {
     nome: "Para Elisa",
     notas: [
-      "Mi", "Ré♯", "Mi", "Ré♯", "Mi", "Si", "Ré", "Dó", "Lá",
-      "Dó", "Mi", "Lá", "Si",
-      "Mi", "Sol♯", "Si", "Dó",
-      "Mi", "Mi", "Ré♯", "Mi", "Ré♯", "Mi", "Si", "Ré", "Dó", "Lá",
-      "Dó", "Mi", "Lá", "Si",
-      "Mi", "Dó", "Si", "Lá"
+      "Sol", "Fá♯", "Sol", "Fá♯", "Sol", "Ré", "Fá", "Ré♯", "Dó",
+      "Sol", "Fá♯", "Sol", "Fá♯", "Sol", "Ré", "Fá", "Ré♯", "Dó",
+      "Ré♯", "Ré", "Dó"
     ]
   },
+  // Em Ré menor para caber nas 12 teclas sem inverter a melodia.
+  // As duas notas mais graves da música original foram tiradas.
   greensleeves: {
     nome: "Greensleeves",
     notas: [
-      "Lá", "Dó", "Ré", "Mi", "Fá", "Mi", "Ré", "Si",
-      "Sol", "Lá", "Si", "Dó", "Lá",
-      "Lá", "Sol♯", "Lá", "Si", "Sol♯", "Mi",
-      "Lá", "Dó", "Ré", "Mi", "Fá", "Mi", "Ré", "Si",
-      "Sol", "Lá", "Si", "Dó", "Si", "Lá",
-      "Sol♯", "Fá♯", "Sol♯", "Lá"
+      "Ré", "Fá", "Sol", "Lá", "Lá♯", "Lá", "Sol", "Mi",
+      "Dó", "Ré", "Mi", "Fá", "Ré",
+      "Ré", "Dó♯", "Ré", "Mi", "Dó♯",
+      "Ré", "Fá", "Sol", "Lá", "Lá♯", "Lá", "Sol", "Mi",
+      "Dó", "Ré", "Mi", "Fá", "Mi", "Ré",
+      "Dó♯", "Ré", "Ré"
     ]
   }
 };
