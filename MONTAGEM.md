@@ -24,22 +24,24 @@ O projeto tem duas partes:
 
 ![Esquema das ligações](esquema_ligacoes.jpeg)
 
-**Antes de tudo:** deixe a protoboard com a linha vermelha (+) em cima e a linha azul (−) embaixo, e não gire mais. Se ela virar, o + e o − trocam de lugar.
+**Antes de tudo:** todos os fios ficam na **parte de cima** da protoboard, para não atrapalhar os dedos na hora de tocar. Usamos só os dois trilhos de cima: a linha vermelha (+), na borda, e a linha azul (−), logo abaixo dela. Os trilhos de baixo ficam vazios.
 
 **Trilhos divididos:** em muitas protoboards grandes, a linha vermelha e a azul têm uma falha no meio. Isso quer dizer que cada metade é um trilho separado. Se a sua for assim, ligue os dois lados de cada linha que você usar com um fio curto.
 
-**Alimentação:** ligue o **5V** do Arduino no trilho da **linha vermelha (+)** (fio vermelho) e um **GND** no trilho da **linha azul (−)** de baixo (fio preto).
+**Alimentação:** ligue o **5V** do Arduino na **linha vermelha (+)** de cima (fio vermelho) e um **GND** na **linha azul (−)** de cima (fio preto).
 
 **Buzzer:** ligue o **+** do buzzer no pino **A1** e o **−** **direto no outro pino GND** do Arduino. O buzzer vai no A1, e não no +, porque é o Arduino que faz ele vibrar na frequência de cada nota.
 
-**Cada tecla** (o botão atravessa o canal do meio; use duas pernas em diagonal):
+**Cada tecla** (o botão atravessa o canal do meio; usamos só as **duas pernas de cima**):
 
-1. Perna de cima à esquerda → fio vermelho até o trilho **+** de cima.
-2. Coluna da perna de baixo à direita:
-   - resistor de **10 kΩ** até o trilho **−** de baixo (mantém o pino em 0 V quando ninguém aperta);
+1. Perna de cima à direita → fio vermelho curto até o trilho **+** de cima.
+2. Coluna da perna de cima à esquerda:
+   - resistor de **10 kΩ** até o trilho **−** de cima (mantém o pino em 0 V quando ninguém aperta);
    - fio até o pino do Arduino daquela nota (tabela abaixo);
    - perna **longa** do LED.
-3. Perna curta do LED na coluna ao lado → resistor de **220 Ω** até o trilho **−** de baixo.
+3. Perna curta do LED na coluna ao lado → resistor de **220 Ω** até o trilho **−** de cima.
+
+> Por dentro, o botão tem pares de pernas sempre ligadas. Se a nota tocar sem parar, o botão está girado do jeito errado: gire-o 90° e encaixe de novo.
 
 Quando o botão é apertado, o pino recebe 5V (HIGH), o LED acende e o Arduino toca a nota.
 
@@ -73,6 +75,7 @@ Quando o botão é apertado, o pino recebe 5V (HIGH), o LED acende e o Arduino t
 | O que acontece | O que fazer |
 |---|---|
 | Metade das teclas não funciona, ou toca sozinha | Os trilhos da protoboard são divididos no meio: ligue os dois lados de cada linha (+ e −) com um fio. |
+| Uma nota toca sem parar | Gire o botão daquela tecla 90° (as pernas de cima estão sempre ligadas nessa posição). |
 | O app não conecta | Feche a Arduino IDE e qualquer outro programa usando o cabo, e tente de novo. |
 | A tecla errada acende na tela | Confira se o fio do botão está no pino certo (tabela acima). |
 | Notas tocam sozinhas, sem ninguém apertar | Um pino está "solto": confira o resistor daquele botão e se o fio está bem encaixado. |
