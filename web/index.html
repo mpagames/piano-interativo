@@ -284,7 +284,7 @@
 
   <!-- Tela do piano (modo livre, aprender melodia e jogo da memória) -->
   <section class="tela" id="tela-piano">
-    <h2>Meu Teclado Musical</h2>
+    <h2 id="titulo-piano">Meu Teclado Musical</h2>
 
     <!-- Painel de aprendizagem -->
     <div class="painel" id="painel-aprendizado" hidden>
@@ -681,6 +681,7 @@ const TECLAS_COMPUTADOR = {
 const $ = (id) => document.getElementById(id);
 
 const telaPiano = $("tela-piano");
+const tituloPiano = $("titulo-piano");
 const telaBiblioteca = $("tela-biblioteca");
 const telaPecas = $("tela-pecas");
 const telaMontagem = $("tela-montagem");
@@ -804,6 +805,7 @@ function mostrarSoTela(tela) {
 
 function mostrarTelaPiano() {
   mostrarSoTela(telaPiano);
+  tituloPiano.textContent = "Meu Teclado Musical";
 }
 
 // Lista de peças e guia de montagem
@@ -874,6 +876,7 @@ function iniciarMusica(chave) {
   });
 
   mostrarTelaPiano();
+  tituloPiano.textContent = MUSICAS[chave].nome;
   selecionarMenu("melodia");
   painelAprendizado.hidden = false;
 
