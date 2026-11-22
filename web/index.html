@@ -112,6 +112,7 @@
     position: relative;
     width: 100%;
     aspect-ratio: 770 / 280;
+    touch-action: manipulation;
     touch-action: none;
     user-select: none;
     -webkit-user-select: none;
@@ -957,6 +958,17 @@ function prepararAudio() {
   }
 }
 document.addEventListener("pointerdown", prepararAudio);
+
+// Celular: dois toques rápidos não dão zoom na tela (alguns navegadores ignoram o CSS)
+let ultimoToque = 0;
+document.addEventListener("touchend", (evento) => {
+  const agora = Date.now();
+  const alvo = evento.target;
+  const ehCampo = alvo.closest && alvo.closest("input, a");
+  if (!ehCampo && agora - ultimoToque < 350) evento.preventDefault();
+  ultimoToque = agora;
+}, { passive: false });
+document.addEventListener("dblclick", (evento) => evento.preventDefault());
 document.addEventListener("keydown", prepararAudio);
 
 // Toca um bipe: frequência (Hz), início e duração (segundos), tipo de onda
