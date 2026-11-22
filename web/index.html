@@ -32,6 +32,8 @@
 
   * { box-sizing: border-box; }
   html, body { margin: 0; min-height: 100%; }
+  /* Celular: toque duplo não dá zoom (o zoom com dois dedos continua funcionando) */
+  html, body, button, .tecla, .cartao { touch-action: manipulation; }
 
   body {
     background: var(--fundo);
@@ -59,6 +61,7 @@
     font-size: 12px; font-weight: bold; letter-spacing: .05em;
     color: var(--menu-texto2); margin: 0 20px 15px;
   }
+  .titulo-celular { display: none; }
   .itens { display: flex; flex-direction: column; }
   .rotulo-atividades { margin-top: 25px !important; }
   .item {
@@ -225,7 +228,11 @@
   .tabela-guia td.qtd { font-weight: bold; white-space: nowrap; }
   .tabela-guia input { width: 20px; height: 20px; margin: 0; cursor: pointer; }
   .rolagem { overflow-x: auto; }
-  .pinos td, .pinos th { text-align: center; padding: 8px 4px; }
+  .pinos { display: grid; grid-template-columns: repeat(auto-fill, minmax(62px, 1fr)); gap: 8px; margin: 12px 0 4px; }
+  .pino { border: 2px solid var(--titulo); border-radius: 8px; padding: 8px 4px; text-align: center; background: #fff; }
+  .pino.preto { background: var(--titulo); color: #fff; }
+  .pino b { display: block; font-size: 16px; }
+  .pino span { font-size: 13px; opacity: .8; }
   .faixas-cor { display: inline-flex; gap: 3px; vertical-align: middle; margin-right: 8px; }
   .cor { width: 12px; height: 24px; border-radius: 3px; border: 1px solid rgba(0,0,0,.15); }
   .c-marrom { background: #6B3E26; } .c-preto { background: #1B1B1B; } .c-laranja { background: #E67E22; }
@@ -237,6 +244,12 @@
   .leitura a { color: var(--link); font-weight: bold; }
 
   @media (max-width: 760px) {
+    /* lista de peças: "para que serve" vai embaixo do nome */
+    .tabela-pecas tr:first-child { display: none; }
+    .tabela-pecas tr { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; border-bottom: 1px solid var(--borda); padding: 8px 0; }
+    .tabela-pecas td { border: 0; padding: 2px 4px; }
+    .tabela-pecas td:nth-child(2) { font-weight: bold; }
+    .tabela-pecas td:nth-child(4) { grid-column: 2 / 4; color: var(--texto2); font-size: 14px; }
     .passo-guia { grid-template-columns: minmax(0, 1fr); }
     .passo-guia .figura { max-width: 320px; margin: 0 auto; }
     .resistores { grid-template-columns: minmax(0, 1fr); }
@@ -250,15 +263,24 @@
     body { flex-direction: column; }
     .menu { width: auto; padding-bottom: 12px; }
     .menu h1 { margin: 16px; font-size: 20px; }
-    .menu h1 br { display: none; }
+    .titulo-largo { display: none; }
+    .titulo-celular { display: inline; }
     .menu .rotulo { display: none; }
-    .itens { flex-direction: row; overflow-x: auto; padding: 0 6px; }
+    /* todas as abas aparecem, quebrando em mais de uma linha */
+    .itens { flex-direction: row; flex-wrap: wrap; gap: 6px; padding: 0 12px; }
     .rotulo-atividades + .itens { margin-top: 6px; }
-    .item { white-space: nowrap; margin: 0 4px; padding: 10px 12px; font-size: 14px; }
-    .conexao { margin: 12px 12px 0; }
-    .grade { grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; }
+    .item { white-space: nowrap; margin: 0; padding: 9px 11px; font-size: 14px; background: #30475f; }
+    .item.ativo { background: var(--menu-ativo); box-shadow: inset 0 0 0 2px var(--destaque); }
+    .conexao { margin: 12px 12px 0; padding: 10px 12px; }
+    .conexao.sem-serial .status { display: none; }
+    .conexao.sem-serial p { margin: 0; }
+    .grade { grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; gap: 12px; }
+    .cartao { height: auto; min-height: 112px; padding: 14px 8px; }
     h2 { font-size: 24px; }
-    .moldura { padding: 10px; }
+    .moldura { padding: 8px; }
+    /* teclas mais altas: mais fáceis de acertar com o dedo */
+    .teclado { aspect-ratio: 770 / 460; }
+    .bloco { padding: 16px 14px; }
   }
 </style>
 </head>
@@ -268,7 +290,7 @@
      MENU LATERAL
      ===================================== -->
 <nav class="menu">
-  <h1>PIANO 🎹<br>INTERATIVO</h1>
+  <h1><span class="titulo-largo">PIANO 🎹<br>INTERATIVO</span><span class="titulo-celular">🎹 PIANO INTERATIVO</span></h1>
   <div class="rotulo">MONTAR O PIANO</div>
   <div class="itens">
     <button class="item" id="menu-pecas">🧰&nbsp;&nbsp; Lista de peças</button>
@@ -340,7 +362,7 @@
     <p class="subtitulo">Tudo o que você precisa para montar um piano de 12 teclas. Marque o que já separou!</p>
 
     <div class="bloco rolagem">
-      <table class="tabela-guia">
+      <table class="tabela-guia tabela-pecas">
         <tr><th>✔</th><th>Peça</th><th>Quantas</th><th>Para que serve</th></tr>
         <tr><td><input type="checkbox" aria-label="Separei o Arduino"></td><td>Arduino Uno + cabo USB (A-B)</td><td class="qtd">1</td><td>É o cérebro do piano</td></tr>
         <tr><td><input type="checkbox" aria-label="Separei a protoboard"></td><td>Protoboard de 830 furos</td><td class="qtd">1</td><td>Onde encaixamos as peças, sem solda</td></tr>
@@ -523,10 +545,7 @@
       <span class="numero">Passo 9</span>
       <h3>Agora, as outras 11 teclas</h3>
       <p>Desligue o cabo USB e repita os passos 3 a 6 para cada tecla, da esquerda para a direita. Só muda o pino do fio verde:</p>
-      <div class="rolagem"><table class="tabela-guia pinos">
-          <tr><th>Tecla</th><td>Dó</td><td>Dó♯</td><td>Ré</td><td>Ré♯</td><td>Mi</td><td>Fá</td><td>Fá♯</td><td>Sol</td><td>Sol♯</td><td>Lá</td><td>Lá♯</td><td>Si</td></tr>
-          <tr><th>Pino</th><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td><td>11</td><td>12</td><td>13</td></tr>
-        </table></div>
+      <div class="pinos"><div class="pino"><b>Dó</b><span>pino 2</span></div><div class="pino preto"><b>Dó♯</b><span>pino 3</span></div><div class="pino"><b>Ré</b><span>pino 4</span></div><div class="pino preto"><b>Ré♯</b><span>pino 5</span></div><div class="pino"><b>Mi</b><span>pino 6</span></div><div class="pino"><b>Fá</b><span>pino 7</span></div><div class="pino preto"><b>Fá♯</b><span>pino 8</span></div><div class="pino"><b>Sol</b><span>pino 9</span></div><div class="pino preto"><b>Sol♯</b><span>pino 10</span></div><div class="pino"><b>Lá</b><span>pino 11</span></div><div class="pino preto"><b>Lá♯</b><span>pino 12</span></div><div class="pino"><b>Si</b><span>pino 13</span></div></div>
       <div class="dica-guia">Teste cada tecla logo depois de montar. Na tecla Si, tire antes o fio do pino 13 do Passo 8. Não use os pinos 0 e 1: eles são do cabo USB.</div>
     </div>
 
@@ -1354,6 +1373,7 @@ if ("serial" in navigator) {
   mostrarStatus("desconectado");
 } else {
   botaoConectar.hidden = true;
+  conexao.classList.add("sem-serial");
   statusDica.textContent =
     "Para conectar o piano, abra esta página no Google Chrome ou no Microsoft Edge, no computador.";
 }
