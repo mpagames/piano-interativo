@@ -256,6 +256,39 @@
     .resistores { grid-template-columns: minmax(0, 1fr); }
   }
 
+  /* ========== SUA OPINIÃO ========== */
+  .barra-opiniao { height: 10px; background: var(--borda); border-radius: 6px; overflow: hidden; margin-bottom: 16px; }
+  .barra-opiniao div { height: 100%; width: 0; background: var(--azul); transition: width .3s; }
+  .pergunta { text-align: center; }
+  .pergunta h3 { font-size: 26px; margin: 6px 0 18px; }
+  .opcoes { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  .opcao {
+    border: 3px solid var(--borda); border-radius: 14px; background: #fff; color: var(--titulo);
+    padding: 16px 10px; font-size: 18px; font-weight: bold; display: flex; flex-direction: column; align-items: center; gap: 6px;
+  }
+  .opcao .emoji { font-size: 44px; line-height: 1; }
+  .opcao:hover { border-color: var(--azul); background: #F0F7FF; }
+  .opcao:active { transform: scale(.97); }
+  .opcao:focus-visible { outline: 3px solid var(--destaque); outline-offset: 2px; }
+  .obrigado { font-size: 64px; }
+  .area-professora { text-align: center; margin: 28px 0 20px; }
+  .area-professora .botao { font-size: 12px; opacity: .7; }
+  .grafico { margin: 14px 0 18px; }
+  .grafico h4 { margin: 0 0 6px; font-size: 15px; }
+  .barra-res { display: grid; grid-template-columns: minmax(120px, 210px) 1fr 70px; gap: 8px; align-items: center; font-size: 14px; margin: 4px 0; }
+  .barra-res .trilho { background: var(--cinza); border-radius: 5px; height: 18px; overflow: hidden; }
+  .barra-res .cheio { background: var(--azul); height: 100%; border-radius: 5px; }
+  .barra-res .num { color: var(--texto2); text-align: right; }
+  .obs-resultados { font-size: 13px; color: var(--texto2); margin-top: 10px; }
+  @media (max-width: 760px) {
+    .pergunta h3 { font-size: 21px; }
+    .opcoes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .opcao { font-size: 15px; padding: 12px 6px; }
+    .opcao .emoji { font-size: 36px; }
+    .barra-res { grid-template-columns: 1fr 70px; }
+    .barra-res .rotulo-res { grid-column: 1 / 3; }
+  }
+
   /* ========== CONFETES ========== */
   .confetes { position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 100; }
 
@@ -302,6 +335,7 @@
     <button class="item" id="menu-livre">♫&nbsp;&nbsp; Modo livre</button>
     <button class="item" id="menu-melodia">📖&nbsp;&nbsp; Aprenda uma melodia</button>
     <button class="item" id="menu-memoria">🧠&nbsp;&nbsp; Jogo da memória</button>
+    <button class="item" id="menu-opiniao">💬&nbsp;&nbsp; Sua opinião</button>
   </div>
 
   <div class="conexao" id="conexao">
@@ -355,6 +389,41 @@
     <h2>Aprenda uma melodia</h2>
     <p class="subtitulo">Escolha uma música para aprender!</p>
     <div class="grade" id="grade-musicas"></div>
+  </section>
+
+  <!-- Sua opinião: uma pergunta por vez, com botões grandes -->
+  <section class="tela leitura" id="tela-opiniao" hidden>
+    <h2>💬 Sua opinião</h2>
+    <p class="subtitulo" id="opiniao-progresso">Pergunta 1 de 8</p>
+    <div class="barra-opiniao"><div id="opiniao-barra"></div></div>
+    <div class="bloco pergunta" id="opiniao-pergunta">
+      <h3 id="opiniao-titulo"></h3>
+      <div class="opcoes" id="opiniao-opcoes"></div>
+      <div class="linha-botoes"><button class="botao" id="opiniao-voltar">← Voltar</button></div>
+    </div>
+    <div class="bloco pergunta" id="opiniao-fim" hidden>
+      <div class="obrigado">🎉</div>
+      <h3>Obrigado pela sua opinião!</h3>
+      <p>Ela vai ajudar a deixar o piano ainda melhor.</p>
+      <div class="linha-botoes"><button class="botao principal" id="opiniao-proxima">👉 Próxima criança</button></div>
+    </div>
+    <div class="area-professora">
+      <button class="botao" id="opiniao-ver-resultados">📊 Ver resultados (professora)</button>
+    </div>
+
+    <!-- Resultados -->
+    <div id="opiniao-resultados" hidden>
+      <div class="bloco">
+        <h3>📊 Resultados: <span id="opiniao-total">0</span> resposta(s) neste computador</h3>
+        <div id="opiniao-graficos"></div>
+        <div class="linha-botoes" style="justify-content:flex-start">
+          <button class="botao principal" id="opiniao-baixar">⬇ Baixar planilha (CSV)</button>
+          <button class="botao" id="opiniao-fechar">Fechar resultados</button>
+          <button class="botao" id="opiniao-apagar">🗑 Apagar todas as respostas</button>
+        </div>
+        <p class="obs-resultados">As respostas ficam guardadas só neste computador e neste navegador. Não pedimos o nome das crianças.</p>
+      </div>
+    </div>
   </section>
 
   <!-- Lista de peças -->
@@ -724,6 +793,7 @@ const tituloPiano = $("titulo-piano");
 const telaBiblioteca = $("tela-biblioteca");
 const telaPecas = $("tela-pecas");
 const telaMontagem = $("tela-montagem");
+const telaOpiniao = $("tela-opiniao");
 const painelAprendizado = $("painel-aprendizado");
 const painelMemoria = $("painel-memoria");
 const teclado = $("teclado");
@@ -739,7 +809,8 @@ const itensMenu = {
   melodia: $("menu-melodia"),
   memoria: $("menu-memoria"),
   pecas: $("menu-pecas"),
-  montagem: $("menu-montagem")
+  montagem: $("menu-montagem"),
+  opiniao: $("menu-opiniao")
 };
 
 // =====================================
@@ -844,7 +915,7 @@ function selecionarMenu(nome) {
 
 // Mostra uma tela e esconde as outras
 function mostrarSoTela(tela) {
-  for (const t of [telaPiano, telaBiblioteca, telaPecas, telaMontagem]) {
+  for (const t of [telaPiano, telaBiblioteca, telaPecas, telaMontagem, telaOpiniao]) {
     t.hidden = (t !== tela);
   }
   window.scrollTo(0, 0);
@@ -1393,6 +1464,161 @@ if ("serial" in navigator) {
     "Para conectar o piano, abra esta página no Google Chrome ou no Microsoft Edge, no computador.";
 }
 
+
+// =====================================
+// SUA OPINIÃO (formulário para as crianças)
+// As respostas ficam guardadas neste navegador. Não pedimos o nome.
+// =====================================
+
+const PERGUNTAS = [
+  { id: "idade", texto: "Quantos anos você tem?", opcoes: [
+    ["🧒", "9 ou menos"], ["🔟", "10 anos"], ["1️⃣1️⃣", "11 anos"], ["🧑", "12 ou mais"] ] },
+  { id: "montar", texto: "O que você achou de montar o piano?", opcoes: [
+    ["😍", "Adorei"], ["🙂", "Gostei"], ["😐", "Mais ou menos"], ["🙁", "Não gostei"] ] },
+  { id: "dificuldade", texto: "Montar a tecla foi…", opcoes: [
+    ["😎", "Fácil"], ["🤔", "Médio"], ["😵", "Difícil"] ] },
+  { id: "funcionou", texto: "A sua tecla funcionou?", opcoes: [
+    ["✅", "Sim, de primeira"], ["🔧", "Sim, depois de arrumar"], ["❌", "Não funcionou"], ["🤷", "Não montei"] ] },
+  { id: "piano", texto: "O que você achou do piano de verdade (as teclas, as luzes e o som)?", opcoes: [
+    ["😍", "Adorei"], ["🙂", "Gostei"], ["😐", "Mais ou menos"], ["🙁", "Não gostei"] ] },
+  { id: "site", texto: "O que você achou do site do piano?", opcoes: [
+    ["😍", "Adorei"], ["🙂", "Gostei"], ["😐", "Mais ou menos"], ["🙁", "Não gostei"] ] },
+  { id: "favorita", texto: "Do que você mais gostou?", opcoes: [
+    ["🔧", "Montar o piano"], ["♫", "Modo livre"], ["📖", "Aprender uma música"], ["🧠", "Jogo da memória"] ] },
+  { id: "casa", texto: "Você gostaria de montar um piano desses em casa?", opcoes: [
+    ["👍", "Sim!"], ["🤔", "Talvez"], ["👎", "Não"] ] }
+];
+
+const CHAVE_OPINIOES = "piano-opinioes";
+let respostaAtual = {};
+let perguntaAtual = 0;
+
+function lerOpinioes() {
+  try { return JSON.parse(localStorage.getItem(CHAVE_OPINIOES)) || []; } catch { return []; }
+}
+function salvarOpinioes(lista) {
+  try { localStorage.setItem(CHAVE_OPINIOES, JSON.stringify(lista)); return true; } catch { return false; }
+}
+
+function mostrarOpiniao() {
+  modoAprendizado = false;
+  sairMemoria();
+  mostrarSoTela(telaOpiniao);
+  selecionarMenu("opiniao");
+  $("opiniao-resultados").hidden = true;
+  comecarOpiniao();
+}
+
+function comecarOpiniao() {
+  respostaAtual = {};
+  perguntaAtual = 0;
+  $("opiniao-fim").hidden = true;
+  $("opiniao-pergunta").hidden = false;
+  desenharPergunta();
+}
+
+function desenharPergunta() {
+  const p = PERGUNTAS[perguntaAtual];
+  $("opiniao-progresso").textContent = `Pergunta ${perguntaAtual + 1} de ${PERGUNTAS.length}`;
+  $("opiniao-barra").style.width = `${(perguntaAtual / PERGUNTAS.length) * 100}%`;
+  $("opiniao-titulo").textContent = p.texto;
+  $("opiniao-voltar").hidden = perguntaAtual === 0;
+  const caixa = $("opiniao-opcoes");
+  caixa.innerHTML = "";
+  for (const [emoji, rotulo] of p.opcoes) {
+    const b = document.createElement("button");
+    b.className = "opcao";
+    b.innerHTML = '<span class="emoji"></span><span></span>';
+    b.children[0].textContent = emoji;
+    b.children[1].textContent = rotulo;
+    b.addEventListener("click", () => responder(p.id, rotulo));
+    caixa.appendChild(b);
+  }
+}
+
+function responder(id, rotulo) {
+  respostaAtual[id] = rotulo;
+  if (perguntaAtual < PERGUNTAS.length - 1) {
+    perguntaAtual++;
+    desenharPergunta();
+    return;
+  }
+  // Última pergunta: guarda e comemora
+  const lista = lerOpinioes();
+  lista.push({ data: new Date().toISOString(), ...respostaAtual });
+  salvarOpinioes(lista);
+  $("opiniao-barra").style.width = "100%";
+  $("opiniao-progresso").textContent = "Pronto!";
+  $("opiniao-pergunta").hidden = true;
+  $("opiniao-fim").hidden = false;
+  somComemoracao();
+  confetes(90);
+}
+
+function mostrarResultados() {
+  const lista = lerOpinioes();
+  $("opiniao-total").textContent = lista.length;
+  const area = $("opiniao-graficos");
+  area.innerHTML = "";
+  for (const p of PERGUNTAS) {
+    const g = document.createElement("div");
+    g.className = "grafico";
+    const h = document.createElement("h4");
+    h.textContent = p.texto;
+    g.appendChild(h);
+    for (const [emoji, rotulo] of p.opcoes) {
+      const n = lista.filter((r) => r[p.id] === rotulo).length;
+      const pct = lista.length ? Math.round((n / lista.length) * 100) : 0;
+      const linha = document.createElement("div");
+      linha.className = "barra-res";
+      linha.innerHTML = '<span class="rotulo-res"></span><span class="trilho"><span class="cheio"></span></span><span class="num"></span>';
+      linha.querySelector(".rotulo-res").textContent = `${emoji} ${rotulo}`;
+      linha.querySelector(".cheio").style.width = `${pct}%`;
+      linha.querySelector(".cheio").style.display = "block";
+      linha.querySelector(".num").textContent = `${n} (${pct}%)`;
+      g.appendChild(linha);
+    }
+    area.appendChild(g);
+  }
+  $("opiniao-resultados").hidden = false;
+  $("opiniao-resultados").scrollIntoView({ behavior: "smooth" });
+}
+
+function baixarPlanilha() {
+  const lista = lerOpinioes();
+  const colunas = ["data", ...PERGUNTAS.map((p) => p.id)];
+  const cabecalho = ["Data e hora", ...PERGUNTAS.map((p) => p.texto)];
+  const aspas = (v) => `"${String(v ?? "").replace(/"/g, '""')}"`;
+  const linhas = [cabecalho.map(aspas).join(";")];
+  for (const r of lista) {
+    const data = r.data ? new Date(r.data).toLocaleString("pt-BR") : "";
+    linhas.push(colunas.map((c) => aspas(c === "data" ? data : r[c])).join(";"));
+  }
+  // ﻿ faz o Excel abrir os acentos certinho
+  const arquivo = new Blob(["﻿" + linhas.join("\r\n")], { type: "text/csv;charset=utf-8" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(arquivo);
+  link.download = "opinioes_piano.csv";
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+}
+
+$("opiniao-voltar").addEventListener("click", () => {
+  if (perguntaAtual > 0) { perguntaAtual--; desenharPergunta(); }
+});
+$("opiniao-proxima").addEventListener("click", comecarOpiniao);
+$("opiniao-ver-resultados").addEventListener("click", mostrarResultados);
+$("opiniao-fechar").addEventListener("click", () => { $("opiniao-resultados").hidden = true; });
+$("opiniao-baixar").addEventListener("click", baixarPlanilha);
+$("opiniao-apagar").addEventListener("click", () => {
+  const total = lerOpinioes().length;
+  if (!total) return;
+  if (confirm(`Apagar as ${total} respostas guardadas neste computador? Não dá para desfazer. Dica: baixe a planilha antes.`)) {
+    salvarOpinioes([]);
+    mostrarResultados();
+  }
+});
+
 // =====================================
 // TECLADO DO COMPUTADOR (para testar sem o piano)
 // =====================================
@@ -1419,6 +1645,7 @@ itensMenu.melodia.addEventListener("click", mostrarBiblioteca);
 itensMenu.memoria.addEventListener("click", abrirMemoria);
 itensMenu.pecas.addEventListener("click", () => mostrarLeitura("pecas"));
 itensMenu.montagem.addEventListener("click", () => mostrarLeitura("montagem"));
+itensMenu.opiniao.addEventListener("click", mostrarOpiniao);
 $("ir-montagem").addEventListener("click", () => mostrarLeitura("montagem"));
 $("ir-tocar").addEventListener("click", mostrarModoLivre);
 
