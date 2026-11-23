@@ -256,6 +256,44 @@
     .resistores { grid-template-columns: minmax(0, 1fr); }
   }
 
+  /* ========== COMO FUNCIONA ========== */
+  .onda-som { width: 100%; height: auto; margin: 6px 0 4px; }
+  .faixas-ar rect { fill: var(--azul-claro, #8FC3F2); animation: empurra 1.2s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+  .faixas-ar rect:nth-child(2) { animation-delay: .12s; } .faixas-ar rect:nth-child(3) { animation-delay: .24s; }
+  .faixas-ar rect:nth-child(4) { animation-delay: .36s; } .faixas-ar rect:nth-child(5) { animation-delay: .48s; }
+  .faixas-ar rect:nth-child(6) { animation-delay: .6s; }  .faixas-ar rect:nth-child(7) { animation-delay: .72s; }
+  .faixas-ar rect:nth-child(8) { animation-delay: .84s; } .faixas-ar rect:nth-child(9) { animation-delay: .96s; }
+  @keyframes empurra { 0%, 100% { transform: scaleX(.5); opacity: .35; } 50% { transform: scaleX(1.25); opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) { .faixas-ar rect { animation: none; opacity: .7; } }
+  .laboratorio { margin-top: 14px; background: var(--cinza); border-radius: 10px; padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; }
+  .onda-lab { width: 100%; height: 90px; background: #fff; border-radius: 8px; }
+  .onda-lab path { fill: none; stroke: var(--azul); stroke-width: 3; }
+  .laboratorio input[type=range] { width: 100%; accent-color: var(--azul); }
+  .laboratorio .botao { align-self: flex-start; }
+  .notas-freq { display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 8px; margin: 10px 0 4px; }
+  .nota-freq { border: 2px solid var(--titulo); border-radius: 8px; background: #fff; color: var(--titulo); padding: 8px 4px; }
+  .nota-freq.sust { background: var(--titulo); color: #fff; }
+  .nota-freq b { display: block; font-size: 16px; }
+  .nota-freq span { font-size: 12px; opacity: .8; }
+  .nota-freq.tocando { outline: 3px solid var(--destaque); outline-offset: 2px; }
+  .fluxo-piano { display: flex; align-items: stretch; gap: 8px; margin: 10px 0 12px; }
+  .etapa-piano { flex: 1; background: var(--cinza); border-radius: 10px; padding: 12px 8px; text-align: center; display: flex; flex-direction: column; gap: 3px; }
+  .etapa-emoji { font-size: 38px; }
+  .etapa-piano b { font-size: 17px; color: var(--azul); }
+  .etapa-piano small { color: var(--texto2); }
+  .seta-piano { align-self: center; font-size: 26px; color: var(--azul); }
+  .pecas-grade { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .peca { display: flex; gap: 10px; background: var(--cinza); border-radius: 10px; padding: 10px 12px; }
+  .peca-emoji { font-size: 30px; line-height: 1.1; }
+  .peca h4 { margin: 0 0 3px; font-size: 16px; }
+  .peca p { margin: 0; font-size: 14px !important; }
+  .papel { font-size: 11px; font-weight: bold; color: #fff; background: var(--azul); border-radius: 10px; padding: 1px 8px; vertical-align: middle; }
+  @media (max-width: 760px) {
+    .fluxo-piano { flex-direction: column; }
+    .seta-piano { transform: rotate(90deg); }
+    .pecas-grade { grid-template-columns: minmax(0, 1fr); }
+  }
+
   /* ========== SUA OPINIÃO ========== */
   .barra-opiniao { height: 10px; background: var(--borda); border-radius: 6px; overflow: hidden; margin-bottom: 16px; }
   .barra-opiniao div { height: 100%; width: 0; background: var(--azul); transition: width .3s; }
@@ -327,6 +365,7 @@
   <h1><span class="titulo-largo">PIANO 🎹<br>INTERATIVO</span><span class="titulo-celular">🎹 PIANO INTERATIVO</span></h1>
   <div class="rotulo">MONTAR O PIANO</div>
   <div class="itens">
+    <button class="item" id="menu-explica">🔊&nbsp;&nbsp; Como funciona</button>
     <button class="item" id="menu-pecas">🧰&nbsp;&nbsp; Lista de peças</button>
     <button class="item" id="menu-montagem">🔧&nbsp;&nbsp; Guia de montagem</button>
   </div>
@@ -389,6 +428,76 @@
     <h2>Aprenda uma melodia</h2>
     <p class="subtitulo">Escolha uma música para aprender!</p>
     <div class="grade" id="grade-musicas"></div>
+  </section>
+
+  <!-- Como funciona: as explicações da aula -->
+  <section class="tela leitura" id="tela-explica" hidden>
+    <h2>🔊 Como funciona</h2>
+    <p class="subtitulo">Tudo o que você precisa saber antes de montar o piano. Aperte os botões para ouvir!</p>
+
+    <div class="bloco">
+      <span class="numero">1</span>
+      <h3>O que é o som?</h3>
+      <p>Som é <b>vibração</b>. Quando algo vibra, empurra o ar, e o ar empurra o ar do lado, como uma fila de dominós,
+      até chegar no seu ouvido. Essas “ondas” de ar apertado e solto são o som.</p>
+      <svg class="onda-som" viewBox="0 0 600 120" role="img" aria-label="Alto-falante vibrando e ondas de ar chegando até a orelha">
+        <text x="6" y="78" font-size="52">🔊</text>
+        <g class="faixas-ar"><rect x="80" y="20" width="22" height="80" rx="11"/><rect x="132" y="20" width="22" height="80" rx="11"/><rect x="184" y="20" width="22" height="80" rx="11"/><rect x="236" y="20" width="22" height="80" rx="11"/><rect x="288" y="20" width="22" height="80" rx="11"/><rect x="340" y="20" width="22" height="80" rx="11"/><rect x="392" y="20" width="22" height="80" rx="11"/><rect x="444" y="20" width="22" height="80" rx="11"/><rect x="496" y="20" width="22" height="80" rx="11"/></g>
+        <text x="546" y="80" font-size="50">👂</text>
+      </svg>
+      <div class="dica-guia">Coloque a mão no pescoço e fale “aaaa”: você sente a vibração da sua voz!</div>
+    </div>
+
+    <div class="bloco">
+      <span class="numero">2</span>
+      <h3>Grave ou agudo?</h3>
+      <p>O que muda é a <b>frequência</b>: quantas vezes o som vibra em <b>1 segundo</b>. Essa medida se chama <b>Hertz (Hz)</b>.
+      Vibra devagar = som <b>grave</b>, como um trovão 🌩️. Vibra rápido = som <b>agudo</b>, como um grilo 🦗.</p>
+      <div class="linha-botoes" style="justify-content:flex-start">
+        <button class="botao principal" id="ouvir-grave">🌩️ Ouvir um grave</button>
+        <button class="botao principal" id="ouvir-agudo">🦗 Ouvir um agudo</button>
+      </div>
+      <div class="laboratorio">
+        <svg viewBox="0 0 600 120" preserveAspectRatio="none" class="onda-lab" aria-hidden="true"><path id="lab-onda" d=""/></svg>
+        <label for="lab-freq">Arraste e escute: <b id="lab-valor">440 Hz</b> <span id="lab-tipo">(médio)</span></label>
+        <input type="range" id="lab-freq" min="100" max="2000" step="10" value="440">
+        <button class="botao" id="lab-tocar">▶ Tocar</button>
+      </div>
+    </div>
+
+    <div class="bloco">
+      <span class="numero">3</span>
+      <h3>As notas musicais</h3>
+      <ul>
+        <li><b>Teclas brancas:</b> as 7 notas naturais: Dó, Ré, Mi, Fá, Sol, Lá e Si.</li>
+        <li><b>Teclas pretas:</b> as 5 notas “acidentais”, os sustenidos (♯), que ficam entre as brancas.</li>
+      </ul>
+      <p>Cada nota é uma frequência. Toque nas notas para ouvir a do nosso piano:</p>
+      <div class="notas-freq"><button class="nota-freq" data-nota="Dó"><b>Dó</b><span>523 Hz</span></button><button class="nota-freq sust" data-nota="Dó♯"><b>Dó♯</b><span>554 Hz</span></button><button class="nota-freq" data-nota="Ré"><b>Ré</b><span>587 Hz</span></button><button class="nota-freq sust" data-nota="Ré♯"><b>Ré♯</b><span>622 Hz</span></button><button class="nota-freq" data-nota="Mi"><b>Mi</b><span>659 Hz</span></button><button class="nota-freq" data-nota="Fá"><b>Fá</b><span>698 Hz</span></button><button class="nota-freq sust" data-nota="Fá♯"><b>Fá♯</b><span>740 Hz</span></button><button class="nota-freq" data-nota="Sol"><b>Sol</b><span>784 Hz</span></button><button class="nota-freq sust" data-nota="Sol♯"><b>Sol♯</b><span>831 Hz</span></button><button class="nota-freq" data-nota="Lá"><b>Lá</b><span>880 Hz</span></button><button class="nota-freq sust" data-nota="Lá♯"><b>Lá♯</b><span>932 Hz</span></button><button class="nota-freq" data-nota="Si"><b>Si</b><span>988 Hz</span></button></div>
+      <div class="dica-guia">Curiosidade: no meio de um piano de verdade, o Dó vibra 262 vezes por segundo. No nosso piano, ele vibra <b>523</b>: o dobro!
+      Quando a frequência dobra, a nota é a mesma, só que mais aguda. Isso se chama <b>oitava</b>.</div>
+    </div>
+
+    <div class="bloco">
+      <span class="numero">4</span>
+      <h3>Como o piano eletrônico funciona</h3>
+      <div class="fluxo-piano">
+        <div class="etapa-piano"><div class="etapa-emoji">🔘</div><b>Entrada</b><span>Tecla (botão)</span><small>Você aperta</small></div>
+        <div class="seta-piano">➜</div>
+        <div class="etapa-piano"><div class="etapa-emoji">🧠</div><b>Controle</b><span>Arduino (lógica)</span><small>Ele descobre a nota</small></div>
+        <div class="seta-piano">➜</div>
+        <div class="etapa-piano"><div class="etapa-emoji">🔊</div><b>Saída</b><span>Buzzer (som)</span><small>e o LED acende 💡</small></div>
+      </div>
+      <p>Quase todo aparelho eletrônico funciona assim: o controle remoto, o videogame, o celular… Sempre tem algo que <b>recebe</b>, algo que <b>pensa</b> e algo que <b>responde</b>.</p>
+    </div>
+
+    <div class="bloco">
+      <span class="numero">5</span>
+      <h3>O que cada peça faz</h3>
+      <div class="pecas-grade"><div class="peca"><div class="peca-emoji">🔘</div><div><h4>Botão <span class="papel">Entrada</span></h4><p>É a tecla. Quando você aperta, ele fecha o caminho e a energia passa. Soltou, o caminho abre de novo.</p></div></div><div class="peca"><div class="peca-emoji">🧠</div><div><h4>Arduino <span class="papel">Controle</span></h4><p>É o cérebro. Ele percebe qual botão foi apertado, escolhe a nota e manda o buzzer vibrar. Também avisa o computador.</p></div></div><div class="peca"><div class="peca-emoji">🔊</div><div><h4>Buzzer <span class="papel">Saída</span></h4><p>É a boca do piano. O Arduino faz ele vibrar centenas de vezes por segundo, e essa vibração vira som.</p></div></div><div class="peca"><div class="peca-emoji">💡</div><div><h4>LED <span class="papel">Saída</span></h4><p>É a luz da tecla. Acende quando você aperta. Tem lado certo: a perna longa é o +.</p></div></div><div class="peca"><div class="peca-emoji">🟫</div><div><h4>Resistor de 10 kΩ <span class="papel">Ajudante</span></h4><p>Segura o pino em zero quando ninguém aperta. Sem ele, o Arduino “acha” que a tecla está apertada e o piano toca sozinho.</p></div></div><div class="peca"><div class="peca-emoji">🟫</div><div><h4>Resistor de 220 Ω <span class="papel">Ajudante</span></h4><p>Diminui a energia que vai para o LED. Sem ele, o LED pode queimar.</p></div></div><div class="peca"><div class="peca-emoji">🔲</div><div><h4>Protoboard <span class="papel">Base</span></h4><p>É onde encaixamos tudo, sem solda. Por baixo tem fios escondidos que ligam os furos.</p></div></div><div class="peca"><div class="peca-emoji">〰️</div><div><h4>Fios (jumpers) <span class="papel">Ligações</span></h4><p>São as estradas por onde a energia e os sinais passam de uma peça para outra.</p></div></div></div>
+    </div>
+
+    <div class="proximo"><button class="botao principal" id="ir-pecas">Entendi! Ver a lista de peças →</button></div>
   </section>
 
   <!-- Sua opinião: uma pergunta por vez, com botões grandes -->
@@ -794,6 +903,7 @@ const telaBiblioteca = $("tela-biblioteca");
 const telaPecas = $("tela-pecas");
 const telaMontagem = $("tela-montagem");
 const telaOpiniao = $("tela-opiniao");
+const telaExplica = $("tela-explica");
 const painelAprendizado = $("painel-aprendizado");
 const painelMemoria = $("painel-memoria");
 const teclado = $("teclado");
@@ -810,7 +920,8 @@ const itensMenu = {
   memoria: $("menu-memoria"),
   pecas: $("menu-pecas"),
   montagem: $("menu-montagem"),
-  opiniao: $("menu-opiniao")
+  opiniao: $("menu-opiniao"),
+  explica: $("menu-explica")
 };
 
 // =====================================
@@ -915,13 +1026,14 @@ function selecionarMenu(nome) {
 
 // Mostra uma tela e esconde as outras
 function mostrarSoTela(tela) {
-  for (const t of [telaPiano, telaBiblioteca, telaPecas, telaMontagem, telaOpiniao]) {
+  for (const t of [telaPiano, telaBiblioteca, telaPecas, telaMontagem, telaOpiniao, telaExplica]) {
     t.hidden = (t !== tela);
   }
   window.scrollTo(0, 0);
 }
 
 function mostrarTelaPiano() {
+  pararTomLab();
   mostrarSoTela(telaPiano);
   tituloPiano.textContent = "Meu Teclado Musical";
 }
@@ -930,7 +1042,8 @@ function mostrarTelaPiano() {
 function mostrarLeitura(nome) {
   modoAprendizado = false;
   sairMemoria();
-  mostrarSoTela(nome === "pecas" ? telaPecas : telaMontagem);
+  mostrarSoTela({ pecas: telaPecas, montagem: telaMontagem, explica: telaExplica }[nome]);
+  if (nome !== "explica") pararTomLab();
   selecionarMenu(nome);
 }
 
@@ -943,6 +1056,7 @@ function mostrarModoLivre() {
 }
 
 function mostrarBiblioteca() {
+  pararTomLab();
   modoAprendizado = false;
   sairMemoria();
   mostrarSoTela(telaBiblioteca);
@@ -1465,6 +1579,79 @@ if ("serial" in navigator) {
 }
 
 
+
+// =====================================
+// COMO FUNCIONA (sons para experimentar)
+// =====================================
+
+let tomLab = null; // { osc, ganho } enquanto o laboratório está tocando
+
+function desenharOndaLab(freq) {
+  // Quanto maior a frequência, mais "ondinhas" aparecem
+  const ciclos = Math.max(1, freq / 110);
+  const pontos = [];
+  for (let x = 0; x <= 600; x += 3) {
+    const y = 60 - 40 * Math.sin((x / 600) * ciclos * 2 * Math.PI);
+    pontos.push(`${x === 0 ? "M" : "L"}${x} ${y.toFixed(1)}`);
+  }
+  $("lab-onda").setAttribute("d", pontos.join(" "));
+  $("lab-valor").textContent = `${freq} Hz`;
+  $("lab-tipo").textContent = freq < 300 ? "(grave 🌩️)" : freq > 900 ? "(agudo 🦗)" : "(médio)";
+}
+
+function tocarTomLab() {
+  prepararAudio();
+  if (!audio || tomLab) return;
+  const osc = audio.createOscillator();
+  const ganho = audio.createGain();
+  osc.type = "sine";
+  osc.frequency.value = Number($("lab-freq").value);
+  ganho.gain.setValueAtTime(0.0001, audio.currentTime);
+  ganho.gain.exponentialRampToValueAtTime(0.18, audio.currentTime + 0.05);
+  osc.connect(ganho).connect(audio.destination);
+  osc.start();
+  tomLab = { osc, ganho };
+  $("lab-tocar").textContent = "■ Parar";
+}
+
+function pararTomLab() {
+  if (!tomLab || !audio) return;
+  const { osc, ganho } = tomLab;
+  ganho.gain.exponentialRampToValueAtTime(0.0001, audio.currentTime + 0.08);
+  osc.stop(audio.currentTime + 0.1);
+  tomLab = null;
+  $("lab-tocar").textContent = "▶ Tocar";
+}
+
+$("lab-freq").addEventListener("input", () => {
+  const f = Number($("lab-freq").value);
+  desenharOndaLab(f);
+  if (tomLab) tomLab.osc.frequency.setTargetAtTime(f, audio.currentTime, 0.02);
+});
+$("lab-tocar").addEventListener("click", () => (tomLab ? pararTomLab() : tocarTomLab()));
+
+function tocarExemplo(freq) {
+  pararTomLab();
+  $("lab-freq").value = freq;
+  desenharOndaLab(freq);
+  prepararAudio();
+  bipe(freq, 0, 1.6, "sine", 0.25);
+}
+$("ouvir-grave").addEventListener("click", () => tocarExemplo(130));
+$("ouvir-agudo").addEventListener("click", () => tocarExemplo(1600));
+
+// Notas: com o piano conectado, toca no buzzer; sem ele, no próprio aparelho
+document.querySelectorAll(".nota-freq").forEach((b) => {
+  b.addEventListener("click", () => {
+    const nota = b.dataset.nota;
+    if (porta) enviarNotaParaArduino(nota); else tocarNoAparelho(nota);
+    b.classList.add("tocando");
+    setTimeout(() => b.classList.remove("tocando"), 400);
+  });
+});
+
+desenharOndaLab(440);
+
 // =====================================
 // SUA OPINIÃO (formulário para as crianças)
 // As respostas ficam guardadas neste navegador. Não pedimos o nome.
@@ -1501,6 +1688,7 @@ function salvarOpinioes(lista) {
 }
 
 function mostrarOpiniao() {
+  pararTomLab();
   modoAprendizado = false;
   sairMemoria();
   mostrarSoTela(telaOpiniao);
@@ -1646,6 +1834,8 @@ itensMenu.memoria.addEventListener("click", abrirMemoria);
 itensMenu.pecas.addEventListener("click", () => mostrarLeitura("pecas"));
 itensMenu.montagem.addEventListener("click", () => mostrarLeitura("montagem"));
 itensMenu.opiniao.addEventListener("click", mostrarOpiniao);
+itensMenu.explica.addEventListener("click", () => mostrarLeitura("explica"));
+$("ir-pecas").addEventListener("click", () => mostrarLeitura("pecas"));
 $("ir-montagem").addEventListener("click", () => mostrarLeitura("montagem"));
 $("ir-tocar").addEventListener("click", mostrarModoLivre);
 
